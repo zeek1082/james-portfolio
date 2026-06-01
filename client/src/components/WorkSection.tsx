@@ -604,8 +604,7 @@ export default function WorkSection() {
                   left: 0, // JS overrides this immediately on first scroll tick
                   width: "clamp(260px, 38vw, 500px)",
                   zIndex: j + 2, // higher j = higher z-index = on top
-                  willChange: "transform, left",
-                  transition: "transform 0.12s cubic-bezier(0.23, 1, 0.32, 1)",
+                  willChange: "transform",
                   // Initial translateX keeps card off-screen right; JS overrides on first tick
                   transform: `translateX(${(j + 1) * 600}px)`,
                 }}

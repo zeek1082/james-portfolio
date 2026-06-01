@@ -685,7 +685,6 @@ export default function ScrollCardReveal({
                 zIndex: j + 2,
                 willChange: "transform",
                 transform: `translateX(${(j + 1) * (window.innerWidth + CARD_GAP_PX)}px)`,
-                transition: "transform 0.35s cubic-bezier(0.23,1,0.32,1)",
               }}
 
             >
