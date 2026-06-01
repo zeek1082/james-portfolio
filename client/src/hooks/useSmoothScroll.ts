@@ -35,7 +35,7 @@ let gsapTickerCallback: ((time: number) => void) | null = null;
 export function useSmoothScroll() {
   useEffect(() => {
     const lenis = new Lenis({
-      duration: 0.9,
+      duration: 0.7,
       easing: (t) => 1 - Math.pow(1 - t, 3),
       smoothWheel: true,
       wheelMultiplier: 1.0,
@@ -47,7 +47,8 @@ export function useSmoothScroll() {
 
     // Sync Lenis with GSAP ScrollTrigger AND broadcast to scroll event bus
     lenis.on("scroll", (e: { scroll: number; velocity: number; direction: number }) => {
-      ScrollTrigger.update();
+      // Only update ScrollTrigger if there are active instances — saves work on simple pages
+      if (ScrollTrigger.getAll().length > 0) ScrollTrigger.update();
       if (scrollListeners.size > 0) {
         const payload: ScrollPayload = {
           scroll: e.scroll,

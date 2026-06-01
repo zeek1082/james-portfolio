@@ -1585,7 +1585,7 @@ function VideoHeroSection({ s, accent }: { s: CaseStudySection; accent: string }
         </svg>
       </div>
       {/* Content */}
-      <div ref={overlayRef} style={{ position: "absolute", bottom: "1.5rem", left: "clamp(1.5rem, 4vw, 4rem)", right: "clamp(1.5rem, 4vw, 4rem)", willChange: "transform, opacity", paddingTop: "20px" }}>
+      <div ref={overlayRef} style={{ position: "absolute", bottom: "1.5rem", left: "clamp(1.5rem, 4vw, 4rem)", right: "clamp(1.5rem, 4vw, 4rem)", paddingTop: "20px" }}>
         <p style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.7rem", letterSpacing: "0.2em", color: '#f29354', margin: "0 0 1rem", textTransform: "uppercase" }}>
           {s.heroCategory} — {s.heroYear}
         </p>

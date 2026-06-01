@@ -97,31 +97,21 @@ export default function HeroSection() {
     return () => ctx.revert();
   }, []);
 
-  // Chromatic aberration glitch — intensity driven by scroll velocity
+  // Chromatic aberration glitch — CSS class toggle instead of per-frame textShadow
+  // CSS animation runs on GPU; JS only toggles a class when scroll starts/stops
   useEffect(() => {
     let heroVisible = true;
+    let clearTimer: ReturnType<typeof setTimeout>;
 
     const onScroll = () => {
       if (!heroVisible) return;
-      cancelAnimationFrame(glitchRafRef.current);
-      glitchRafRef.current = requestAnimationFrame(() => {
-        const hero = heroRef.current;
-        if (!hero || !heroVisible) return;
-        const rect = hero.getBoundingClientRect();
-
-        const velocity = Math.abs(window.scrollY - lastScrollY.current);
-        lastScrollY.current = window.scrollY;
-
-        const progress = Math.max(0, Math.min(1, -rect.top / rect.height));
-        const intensity = Math.min(24, velocity * 0.6 + progress * 14);
-
-        const shadow = intensity > 0.5
-          ? `${-intensity * 0.6}px 0 rgba(255,0,60,0.7), ${intensity * 0.6}px 0 rgba(0,180,255,0.7)`
-          : 'none';
-
-        if (jamesRef.current) jamesRef.current.style.textShadow = shadow;
-        if (smithRef.current) smithRef.current.style.textShadow = shadow;
-      });
+      if (jamesRef.current) jamesRef.current.classList.add('is-glitching');
+      if (smithRef.current) smithRef.current.classList.add('is-glitching');
+      clearTimeout(clearTimer);
+      clearTimer = setTimeout(() => {
+        if (jamesRef.current) jamesRef.current.classList.remove('is-glitching');
+        if (smithRef.current) smithRef.current.classList.remove('is-glitching');
+      }, 300);
     };
 
     const io = new IntersectionObserver(
@@ -129,20 +119,18 @@ export default function HeroSection() {
         heroVisible = entry.isIntersecting;
         if (!heroVisible) {
           cancelAnimationFrame(glitchRafRef.current);
-          if (jamesRef.current) jamesRef.current.style.textShadow = 'none';
-          if (smithRef.current) smithRef.current.style.textShadow = 'none';
+          if (jamesRef.current) jamesRef.current.classList.remove('is-glitching');
+          if (smithRef.current) smithRef.current.classList.remove('is-glitching');
         }
       },
       { threshold: 0 }
     );
     if (heroRef.current) io.observe(heroRef.current);
 
-    addLenisScrollListener(({ scroll, velocity }) => {
-      lastScrollY.current = scroll;
-      onScroll();
-    });
+    addLenisScrollListener(onScroll);
     return () => {
       removeLenisScrollListener(onScroll);
+      clearTimeout(clearTimer);
       cancelAnimationFrame(glitchRafRef.current);
       io.disconnect();
     };
@@ -191,7 +179,6 @@ export default function HeroSection() {
           marginTop: "-2vh",
           zIndex: 1,
           pointerEvents: "none",
-          willChange: "transform, opacity",
           transformOrigin: "top center",
           // Scale-in from slightly small — continues the gate zoom motion
           opacity: titleReady ? 1 : 0,
@@ -213,7 +200,6 @@ export default function HeroSection() {
             textAlign: "center",
             whiteSpace: "nowrap",
             userSelect: "none",
-            willChange: "transform",
           }}
         >
           JAMES
@@ -230,7 +216,6 @@ export default function HeroSection() {
             textAlign: "center",
             whiteSpace: "nowrap",
             userSelect: "none",
-            willChange: "transform",
           }}
         >
           SMITH

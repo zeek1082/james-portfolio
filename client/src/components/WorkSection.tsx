@@ -296,16 +296,10 @@ export default function WorkSection() {
         const maxShift = window.innerWidth * 0.1;
         h.style.transform = `translateX(${progress * maxShift}px)`;
 
-        // Chromatic aberration: velocity-based + progress-based
-        const currentY = window.scrollY;
-        const velocity = Math.abs(currentY - lastHeaderScrollY.current);
-        lastHeaderScrollY.current = currentY;
-        const velocityIntensity = Math.min(velocity * 0.3, 14);
-        const progressIntensity = progress * 8;
-        const intensity = velocityIntensity + progressIntensity;
-        h.style.textShadow = intensity > 0.5
-          ? `${-intensity * 0.6}px 0 rgba(255,0,80,0.55), ${intensity * 0.6}px 0 rgba(0,220,255,0.55)`
-          : "none";
+        // Chromatic aberration: CSS class toggle (GPU) instead of per-frame textShadow
+        h.classList.add('is-glitching');
+        clearTimeout((h as any)._glitchTimer);
+        (h as any)._glitchTimer = setTimeout(() => h.classList.remove('is-glitching'), 300);
       });
     };
     window.addEventListener("scroll", onHeaderScroll, { passive: true });
@@ -370,13 +364,27 @@ export default function WorkSection() {
             top: 0,
             height: "100vh",
             overflow: "hidden",
-            backgroundColor: active.bgColor,
-            transition: "background-color 0.7s cubic-bezier(0.23, 1, 0.32, 1)",
+            backgroundColor: projects[0].bgColor,
             display: "flex",
             flexDirection: "row",
             contain: "layout style",
           }}
         >
+          {/* Background color layers — opacity crossfade (GPU) instead of background-color transition (CPU repaint) */}
+          {projects.map((p, i) => (
+            <div
+              key={p.id}
+              style={{
+                position: "absolute",
+                inset: 0,
+                backgroundColor: p.bgColor,
+                opacity: i === activeIndex ? 1 : 0,
+                transition: "opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1)",
+                zIndex: 0,
+                pointerEvents: "none",
+              }}
+            />
+          ))}
           {/* Noise grain overlay */}
           <div
             style={{
@@ -398,7 +406,6 @@ export default function WorkSection() {
               width: "50vw",
               height: "50vw",
               background: `radial-gradient(circle, ${active.accentColor}12 0%, transparent 65%)`,
-              transition: "background 0.7s ease",
               pointerEvents: "none",
               zIndex: 0,
             }}
@@ -411,8 +418,7 @@ export default function WorkSection() {
               flexShrink: 0,
               position: "relative",
               zIndex: 20,
-              backgroundColor: active.bgColor,
-              transition: "background-color 0.7s cubic-bezier(0.23, 1, 0.32, 1)",
+              backgroundColor: "transparent",
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",

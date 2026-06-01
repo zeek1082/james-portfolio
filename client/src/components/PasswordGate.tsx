@@ -176,7 +176,7 @@ export default function PasswordGate({ children }: PasswordGateProps) {
               flexDirection: "column",
               alignItems: "center",
               transformOrigin: "center center",
-              willChange: "transform",
+
             }}
           >
             {/* JAMES SMITH — each word clips up from below */}
