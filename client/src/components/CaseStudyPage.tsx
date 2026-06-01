@@ -333,67 +333,6 @@ function HeroSection({ s, accent }: { s: CaseStudySection; accent: string }) {
             "linear-gradient(to bottom, rgba(10,9,8,0.3) 0%, rgba(10,9,8,0.1) 40%, rgba(10,9,8,0.7) 80%, rgba(10,9,8,1) 100%)",
         }}
       />
-      {/* Scanlines */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          backgroundImage:
-            "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px)",
-          pointerEvents: "none",
-        }}
-      />
-
-      {/* Content */}
-      <div
-        ref={ref}
-        style={{
-          position: "absolute",
-          bottom: "4rem",
-          left: "4rem",
-          right: "4rem",
-          willChange: "transform, opacity",
-        }}
-      >
-        <p
-          style={{
-            fontFamily: "'Space Mono', monospace",
-            fontSize: "0.7rem",
-            letterSpacing: "0.2em",
-            color: accent,
-            margin: "0 0 1rem",
-            textTransform: "uppercase",
-          }}
-        >
-          {s.heroCategory} — {s.heroYear}
-        </p>
-        <h1
-          style={{
-            fontFamily: "'Barlow Condensed', sans-serif",
-            fontWeight: 800,
-            fontSize: "clamp(3rem, 8vw, 7rem)",
-            lineHeight: 0.9,
-            color: "#F2EDE8",
-            margin: "0 0 1.5rem",
-            textTransform: "uppercase",
-            letterSpacing: "-0.02em",
-          }}
-        >
-          {s.heroTitle}
-        </h1>
-        <p
-          style={{
-            fontFamily: "'Space Mono', monospace",
-            fontSize: "0.7rem",
-            letterSpacing: "0.15em",
-            color: "rgba(242,237,232,0.5)",
-            margin: 0,
-            textTransform: "uppercase",
-          }}
-        >
-          Role — {s.heroRole}
-        </p>
-      </div>
 
       {/* Back nav */}
       <BackButton />
@@ -1572,18 +1511,6 @@ function VideoHeroSection({ s, accent }: { s: CaseStudySection; accent: string }
       )}
       {/* Gradient overlay */}
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(10,9,8,0.25) 0%, rgba(10,9,8,0.05) 40%, rgba(10,9,8,0.65) 80%, rgba(10,9,8,1) 100%)" }} />
-      {/* Scanlines */}
-      <div style={{ position: "absolute", inset: 0, backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.07) 2px, rgba(0,0,0,0.07) 4px)", pointerEvents: "none" }} />
-      {/* Chromatic aberration layers */}
-      <div style={{ position: "absolute", inset: 0, background: "rgba(255,0,60,0.03)", mixBlendMode: "screen", transform: "translateX(-1px)", pointerEvents: "none" }} />
-      <div style={{ position: "absolute", inset: 0, background: "rgba(0,180,255,0.03)", mixBlendMode: "screen", transform: "translateX(1px)", pointerEvents: "none" }} />
-      {/* Film grain */}
-      <div style={{ position: "absolute", inset: 0, pointerEvents: "none", opacity: 0.18, mixBlendMode: "overlay" }}>
-        <svg width="100%" height="100%" style={{ position: "absolute", inset: 0 }}>
-          <filter id="vhgrain"><feTurbulence type="fractalNoise" baseFrequency="0.72" numOctaves="4" stitchTiles="stitch" /><feColorMatrix type="saturate" values="0" /></filter>
-          <rect width="100%" height="100%" filter="url(#vhgrain)" />
-        </svg>
-      </div>
       {/* Content */}
       <div ref={overlayRef} style={{ position: "absolute", bottom: "1.5rem", left: "clamp(1.5rem, 4vw, 4rem)", right: "clamp(1.5rem, 4vw, 4rem)", paddingTop: "20px" }}>
         <p style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.7rem", letterSpacing: "0.2em", color: '#f29354', margin: "0 0 1rem", textTransform: "uppercase" }}>
@@ -1682,18 +1609,6 @@ function VideoBreakSection({ s, accent, slideFromRight }: { s: CaseStudySection;
           playsInline
           style={{ width: "100%", height: "auto", objectFit: "contain", display: "block" }}
         />
-        {/* Scanlines */}
-        <div style={{ position: "absolute", inset: 0, backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.07) 2px, rgba(0,0,0,0.07) 4px)", pointerEvents: "none" }} />
-        {/* Chromatic aberration */}
-        <div style={{ position: "absolute", inset: 0, background: "rgba(255,0,60,0.03)", mixBlendMode: "screen", transform: "translateX(-1.5px)", pointerEvents: "none" }} />
-        <div style={{ position: "absolute", inset: 0, background: "rgba(0,180,255,0.03)", mixBlendMode: "screen", transform: "translateX(1.5px)", pointerEvents: "none" }} />
-        {/* Film grain */}
-        <div style={{ position: "absolute", inset: 0, pointerEvents: "none", opacity: 0.2, mixBlendMode: "overlay" }}>
-          <svg width="100%" height="100%" style={{ position: "absolute", inset: 0 }}>
-            <filter id="vbgrain"><feTurbulence ref={grainRef} type="fractalNoise" baseFrequency="0.72" numOctaves="4" stitchTiles="stitch" seed="0" /><feColorMatrix type="saturate" values="0" /></filter>
-            <rect width="100%" height="100%" filter="url(#vbgrain)" />
-          </svg>
-        </div>
         {/* Bottom label */}
         {(s.videoCaption || s.videoLabel) && (
           <div style={{ position: "absolute", bottom: "1.5rem", left: "1.5rem", right: "1.5rem", display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
