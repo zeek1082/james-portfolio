@@ -497,16 +497,6 @@ export default function ScrollCardReveal({
           background: "#F2EDE8",
         }}
       >
-        {/* Subtle noise grain */}
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            backgroundImage:
-            pointerEvents: "none",
-            zIndex: 0,
-          }}
-        />
 
         {/* ── LEFT COLUMN ── */}
         <div
