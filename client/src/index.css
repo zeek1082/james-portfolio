@@ -1,13 +1,14 @@
 /*
- * DESIGN SYSTEM: "Signal in the Dark"
+ * DESIGN SYSTEM: "Warm Editorial"
  * James Smith Portfolio — Product Designer at Meta
  *
- * Philosophy: Cinematic dark editorial. The page breathes — background tints shift
- * as you scroll. Typography at cinematic scale. Projects emerge from darkness.
+ * Philosophy: Warm cream editorial. Light page surface makes project cards pop
+ * like photographs laid on paper. Typography in near-black ink.
+ * Work section stays dark as a deliberate contrast zone.
  *
- * Color: Near-black (#080808) base. Electric violet (#7B5EA7) → cyan (#00D4FF) accents.
+ * Color: Warm cream (#F2EDE8) base. Near-black (#0E0C0A) ink. Forest green (#1A3A2A) accent.
  * Type: Syne (display) / DM Sans (body) / Space Mono (labels/metadata)
- * Motion: Framer Motion entrances, scroll-linked parallax, section color morphing
+ * Motion: Card rise-up on load, scroll-to-horizontal work section, section color morphing
  */
 
 @import "tailwindcss";
@@ -58,53 +59,57 @@
   --font-body: 'DM Sans', sans-serif;
   --font-mono: 'Space Mono', monospace;
 
-  --color-violet: #7B5EA7;
-  --color-violet-bright: #9B7EC8;
-  --color-cyan: #00D4FF;
-  --color-cyan-dim: #00A8CC;
-  --color-surface-1: #0F0F0F;
-  --color-surface-2: #141414;
-  --color-surface-3: #1A1A1A;
+  --color-cream: #F2EDE8;
+  --color-cream-dark: #E8E2DB;
+  --color-ink: #0E0C0A;
+  --color-ink-muted: #4A4540;
+  --color-ink-faint: #9A9490;
+  --color-forest: #1A3A2A;
+  --color-forest-light: #2A5A3A;
+  --color-rust: #C4622A;
+  --color-surface-1: #F2EDE8;
+  --color-surface-2: #E8E2DB;
+  --color-surface-3: #DDD7D0;
 
   --ease-out-expo: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out-expo: cubic-bezier(0.77, 0, 0.175, 1);
 }
 
-/* Dark theme as default */
+/* Light warm cream theme as default */
 :root {
   --radius: 0.5rem;
-  --background: oklch(0.07 0 0);
-  --foreground: oklch(0.95 0 0);
-  --card: oklch(0.10 0 0);
-  --card-foreground: oklch(0.95 0 0);
-  --popover: oklch(0.10 0 0);
-  --popover-foreground: oklch(0.95 0 0);
-  --primary: oklch(0.60 0.15 290);
-  --primary-foreground: oklch(0.98 0 0);
-  --secondary: oklch(0.14 0 0);
-  --secondary-foreground: oklch(0.80 0 0);
-  --muted: oklch(0.14 0 0);
-  --muted-foreground: oklch(0.55 0 0);
-  --accent: oklch(0.14 0 0);
-  --accent-foreground: oklch(0.95 0 0);
+  --background: oklch(0.96 0.008 60);
+  --foreground: oklch(0.10 0.008 60);
+  --card: oklch(0.93 0.010 60);
+  --card-foreground: oklch(0.10 0.008 60);
+  --popover: oklch(0.96 0.008 60);
+  --popover-foreground: oklch(0.10 0.008 60);
+  --primary: oklch(0.28 0.06 145);
+  --primary-foreground: oklch(0.96 0.008 60);
+  --secondary: oklch(0.90 0.010 60);
+  --secondary-foreground: oklch(0.20 0.008 60);
+  --muted: oklch(0.90 0.010 60);
+  --muted-foreground: oklch(0.45 0.008 60);
+  --accent: oklch(0.90 0.010 60);
+  --accent-foreground: oklch(0.10 0.008 60);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(1 0 0 / 8%);
-  --input: oklch(1 0 0 / 10%);
-  --ring: oklch(0.60 0.15 290);
-  --chart-1: oklch(0.60 0.15 290);
-  --chart-2: oklch(0.70 0.15 200);
-  --chart-3: oklch(0.65 0.12 250);
-  --chart-4: oklch(0.55 0.18 310);
-  --chart-5: oklch(0.75 0.10 180);
-  --sidebar: oklch(0.10 0 0);
-  --sidebar-foreground: oklch(0.95 0 0);
-  --sidebar-primary: oklch(0.60 0.15 290);
-  --sidebar-primary-foreground: oklch(0.98 0 0);
-  --sidebar-accent: oklch(0.14 0 0);
-  --sidebar-accent-foreground: oklch(0.95 0 0);
-  --sidebar-border: oklch(1 0 0 / 8%);
-  --sidebar-ring: oklch(0.60 0.15 290);
+  --border: oklch(0.10 0.008 60 / 10%);
+  --input: oklch(0.10 0.008 60 / 8%);
+  --ring: oklch(0.28 0.06 145);
+  --chart-1: oklch(0.28 0.06 145);
+  --chart-2: oklch(0.50 0.12 30);
+  --chart-3: oklch(0.40 0.08 200);
+  --chart-4: oklch(0.35 0.10 310);
+  --chart-5: oklch(0.45 0.08 60);
+  --sidebar: oklch(0.93 0.010 60);
+  --sidebar-foreground: oklch(0.10 0.008 60);
+  --sidebar-primary: oklch(0.28 0.06 145);
+  --sidebar-primary-foreground: oklch(0.96 0.008 60);
+  --sidebar-accent: oklch(0.90 0.010 60);
+  --sidebar-accent-foreground: oklch(0.10 0.008 60);
+  --sidebar-border: oklch(0.10 0.008 60 / 10%);
+  --sidebar-ring: oklch(0.28 0.06 145);
 }
 
 @layer base {
@@ -113,16 +118,15 @@
   }
 
   html {
-    background-color: #080808;
-    /* scroll-behavior: smooth intentionally removed — Lenis handles smooth
-       scrolling. Native scroll-behavior conflicts with Lenis and causes double-smoothing. */
+    background-color: #F2EDE8;
+    /* scroll-behavior: smooth removed — it fights programmatic scroll-to-top on navigation */
   }
 
   body {
     @apply bg-background text-foreground;
     font-family: 'DM Sans', sans-serif;
-    background-color: #080808;
-    color: #F0F0F0;
+    background-color: #F2EDE8;
+    color: #0E0C0A;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -237,6 +241,11 @@
   }
 
   /* Marquee animation */
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
   @keyframes marquee {
     from { transform: translateX(0); }
     to { transform: translateX(-50%); }
@@ -249,11 +258,11 @@
   }
 
   /* Section color morphing backgrounds */
-  .section-dark { background-color: #080808; }
-  .section-navy { background-color: #08080F; }
-  .section-charcoal { background-color: #0C0C0C; }
-  .section-violet-tint { background-color: #0A0812; }
-  .section-warm { background-color: #0C0908; }
+  .section-cream { background-color: #F2EDE8; }
+  .section-cream-dark { background-color: #E8E2DB; }
+  .section-dark { background-color: #0E0C0A; }
+  .section-forest { background-color: #0D1F15; }
+  .section-warm { background-color: #F5F0EA; }
 
   /* Noise texture overlay */
   .noise-overlay::before {
@@ -272,11 +281,11 @@
   }
 
   ::-webkit-scrollbar-track {
-    background: #080808;
+    background: #F2EDE8;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, #7B5EA7, #00D4FF);
+    background: linear-gradient(180deg, #1A3A2A, #C4622A);
     border-radius: 2px;
   }
 
@@ -315,13 +324,13 @@
 
   .nav-link:hover {
     letter-spacing: 0.12em;
-    color: #ffffff;
+    color: #0E0C0A;
   }
 
-  /* Button styles */
+  /* Button styles — light variant */
   .btn-outline-glow {
-    border: 1px solid rgba(123, 94, 167, 0.4);
-    color: #9B7EC8;
+    border: 1px solid rgba(14, 12, 10, 0.25);
+    color: rgba(14, 12, 10, 0.7);
     background: transparent;
     padding: 0.75rem 2rem;
     font-family: 'Space Mono', monospace;
@@ -332,19 +341,49 @@
   }
 
   .btn-outline-glow:hover {
-    border-color: rgba(0, 212, 255, 0.6);
-    color: #00D4FF;
-    box-shadow: 0 0 20px rgba(0, 212, 255, 0.15);
+    border-color: #1A3A2A;
+    color: #1A3A2A;
+    box-shadow: 0 4px 20px rgba(26, 58, 42, 0.12);
   }
 
-  /* Tag/label pill */
+  /* Button styles — dark variant (for dark sections) */
+  .btn-outline-glow-dark {
+    border: 1px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.6);
+    background: transparent;
+    padding: 0.75rem 2rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+  }
+
+  .btn-outline-glow-dark:hover {
+    border-color: rgba(255,255,255,0.6);
+    color: #fff;
+  }
+
+  /* Tag/label pill — light variant (default) */
   .tag-pill {
     font-family: 'Space Mono', monospace;
     font-size: 0.65rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
     padding: 0.25rem 0.75rem;
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(14, 12, 10, 0.15);
+    border-radius: 100px;
+    color: rgba(14, 12, 10, 0.45);
+  }
+
+  /* Tag/label pill — dark variant (for dark sections) */
+  .tag-pill-dark {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 100px;
     color: rgba(255, 255, 255, 0.5);
   }

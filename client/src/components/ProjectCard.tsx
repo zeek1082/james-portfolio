@@ -96,6 +96,8 @@ export default function ProjectCard({
               <img
                 src={image}
                 alt={imageAlt || title}
+                loading="lazy"
+                decoding="async"
                 style={{
                   width: "100%",
                   height: "100%",

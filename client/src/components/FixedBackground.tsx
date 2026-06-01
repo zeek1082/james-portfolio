@@ -19,7 +19,7 @@ export default function FixedBackground() {
         position: "fixed",
         inset: 0,
         zIndex: -1,
-        backgroundColor: "#080808",
+        backgroundColor: "#F2EDE8",
         transition: "none", // We handle transitions manually in the hook
         pointerEvents: "none",
       }}

@@ -11,7 +11,24 @@
     <meta name="theme-color" content="#080808" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Syne 800 preloaded with display=block so it never shows fallback font -->
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@800&display=block" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300;1,9..40,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    <style>
+      /* Prevent FOUT: hide root until Syne 800 is ready, then hand off to React */
+      #root { opacity: 0; }
+    </style>
+    <script>
+      // Reveal root once Syne is loaded — but only if React hasn't taken over yet.
+      // Once PasswordGate mounts it sets window.__GATE_ACTIVE__ = true and owns opacity.
+      function revealRoot() {
+        if (window.__GATE_ACTIVE__) return; // React/PasswordGate owns it
+        var root = document.getElementById('root');
+        if (root) root.style.opacity = '1';
+      }
+      document.fonts.load('800 1em Syne').then(revealRoot).catch(revealRoot);
+      setTimeout(revealRoot, 800);
+    </script>
   </head>
 
   <body>

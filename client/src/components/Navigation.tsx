@@ -12,10 +12,11 @@
  */
 
 import { useEffect, useRef, useState } from "react";
-import { scrollTo } from "@/hooks/useSmoothScroll";
+import { addLenisScrollListener, removeLenisScrollListener, scrollTo } from "@/hooks/useSmoothScroll";
 import { motion, AnimatePresence } from "framer-motion";
+import { useUnlock } from "@/contexts/UnlockContext";
 
-const WDS_DOCS = "/manus-storage/wds-docs_a1579d02.png";
+const WDS_DOCS = "/manus-storage/wds-docs_dbcd9481.png";
 
 const navItems = [
   { label: "Work", target: "#work" },
@@ -43,15 +44,30 @@ const imageVariants = {
 };
 
 export default function Navigation() {
+  const { onUnlock } = useUnlock();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
 
+  // Gate nav entrance behind unlock event (or show immediately if already authed)
+  const alreadyAuthed = (() => { try { return sessionStorage.getItem("js_portfolio_auth") === "1"; } catch { return false; } })();
+  const [navReady, setNavReady] = useState(alreadyAuthed);
+
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 80);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    if (alreadyAuthed) return;
+    const unsub = onUnlock(() => setNavReady(true));
+    return unsub;
+  }, [onUnlock, alreadyAuthed]);
+
+  useEffect(() => {
+    // Use addLenisScrollListener so this piggybacks on the existing Lenis tick
+    // instead of adding a separate window scroll listener.
+    const handleScroll = ({ scroll }: { scroll: number }) => {
+      setScrolled(scroll > 80);
+    };
+    addLenisScrollListener(handleScroll);
+    return () => removeLenisScrollListener(handleScroll);
   }, []);
 
   // Lock body scroll when menu is open
@@ -74,96 +90,12 @@ export default function Navigation() {
       {/* ── Top nav bar ── */}
       <motion.nav
         initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-        className="fixed top-0 left-0 right-0 z-50 px-6 md:px-10 py-5 flex items-center justify-between"
+        animate={{ opacity: navReady ? 1 : 0, y: navReady ? 0 : -20 }}
+        transition={{ duration: 0.7, delay: navReady ? 0.1 : 0, ease: "easeOut" }}
+        className="fixed top-0 left-0 right-0 z-50 px-6 md:px-10 py-5 flex items-center justify-start gap-6"
         style={{ background: "transparent" }}
       >
-        {/* Logo */}
-        <button
-          onClick={() => handleNav("#hero")}
-          className="flex items-center gap-2 group"
-          style={{ zIndex: 60, position: "relative" }}
-        >
-          <div
-            className="w-8 h-8 flex items-center justify-center"
-            style={{
-              background: "linear-gradient(135deg, #7B5EA7, #00D4FF)",
-              clipPath: "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)",
-            }}
-          >
-            <span
-              style={{
-                fontFamily: "Syne, sans-serif",
-                fontWeight: 700,
-                fontSize: "0.7rem",
-                color: "white",
-                letterSpacing: "-0.02em",
-              }}
-            >
-              JS
-            </span>
-          </div>
-          <span
-            style={{
-              fontFamily: "Syne, sans-serif",
-              fontWeight: 600,
-              fontSize: "0.85rem",
-              color: menuOpen ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.7)",
-              letterSpacing: "0.05em",
-              transition: "color 0.3s ease",
-            }}
-            className="hidden sm:block"
-          >
-            James Smith
-          </span>
-        </button>
-
-        {/* Desktop nav links — fade out on scroll */}
-        <div
-          className="hidden md:flex items-center gap-8"
-          style={{
-            opacity: scrolled ? 0 : 1,
-            pointerEvents: scrolled ? "none" : "auto",
-            transition: "opacity 0.4s cubic-bezier(0.23,1,0.32,1)",
-          }}
-        >
-          {navItems.map((item) => (
-            <button
-              key={item.label}
-              onClick={() => handleNav(item.target)}
-              style={{
-                fontFamily: "Space Mono, monospace",
-                fontSize: "0.7rem",
-                letterSpacing: "0.12em",
-                textTransform: "uppercase",
-                color: "rgba(255,255,255,0.5)",
-                background: "none",
-                border: "none",
-                transition: "letter-spacing 0.3s ease, color 0.3s ease",
-              }}
-              onMouseEnter={(e) => {
-                (e.target as HTMLElement).style.letterSpacing = "0.2em";
-                (e.target as HTMLElement).style.color = "rgba(255,255,255,0.9)";
-              }}
-              onMouseLeave={(e) => {
-                (e.target as HTMLElement).style.letterSpacing = "0.12em";
-                (e.target as HTMLElement).style.color = "rgba(255,255,255,0.5)";
-              }}
-            >
-              {item.label}
-            </button>
-          ))}
-          <button
-            onClick={() => handleNav("#contact")}
-            className="btn-outline-glow"
-            style={{ borderRadius: "2px" }}
-          >
-            Get in touch
-          </button>
-        </div>
-
-        {/* Hamburger — fades in on scroll (desktop) + always visible on mobile */}
+        {/* Hamburger — top-left, only nav element */}
         <button
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label="Toggle menu"
@@ -172,16 +104,20 @@ export default function Navigation() {
             zIndex: 60,
             display: "flex",
             flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
             gap: "5px",
-            padding: "8px",
-            background: "none",
+            width: "52px",
+            height: "52px",
+            borderRadius: "50%",
+            background: "#2D5016",
             border: "none",
             cursor: "pointer",
-            opacity: scrolled || menuOpen ? 1 : 0,
-            pointerEvents: scrolled || menuOpen ? "auto" : "none",
-            transition: "opacity 0.4s cubic-bezier(0.23,1,0.32,1)",
+            transition: "background 0.35s cubic-bezier(0.23,1,0.32,1), transform 0.15s ease",
+            boxShadow: "0 2px 12px rgba(0,0,0,0.15)",
           }}
-          className="md:block"
+          onMouseEnter={e => (e.currentTarget.style.transform = "scale(1.06)")}
+          onMouseLeave={e => (e.currentTarget.style.transform = "scale(1)")}
         >
           {/* Show X when open, bars when closed */}
           <span
@@ -189,7 +125,7 @@ export default function Navigation() {
               display: "block",
               width: "24px",
               height: "1.5px",
-              background: menuOpen ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.7)",
+              background: "rgba(255,255,255,0.95)",
               transition: "transform 0.35s cubic-bezier(0.23,1,0.32,1), opacity 0.25s ease",
               transform: menuOpen ? "translateY(6.5px) rotate(45deg)" : "none",
             }}
@@ -199,7 +135,7 @@ export default function Navigation() {
               display: "block",
               width: "24px",
               height: "1.5px",
-              background: menuOpen ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.7)",
+              background: "rgba(255,255,255,0.95)",
               transition: "opacity 0.25s ease",
               opacity: menuOpen ? 0 : 1,
             }}
@@ -209,7 +145,7 @@ export default function Navigation() {
               display: "block",
               width: "24px",
               height: "1.5px",
-              background: menuOpen ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.7)",
+              background: "rgba(255,255,255,0.95)",
               transition: "transform 0.35s cubic-bezier(0.23,1,0.32,1), opacity 0.25s ease",
               transform: menuOpen ? "translateY(-6.5px) rotate(-45deg)" : "none",
             }}
@@ -223,15 +159,15 @@ export default function Navigation() {
           <motion.div
             ref={overlayRef}
             key="menu-overlay"
-            initial={{ clipPath: "circle(0% at calc(100% - 48px) 48px)" }}
-            animate={{ clipPath: "circle(170% at calc(100% - 48px) 48px)" }}
-            exit={{ clipPath: "circle(0% at calc(100% - 48px) 48px)" }}
+            initial={{ clipPath: "circle(0% at 48px 48px)" }}
+            animate={{ clipPath: "circle(170% at 48px 48px)" }}
+            exit={{ clipPath: "circle(0% at 48px 48px)" }}
             transition={{ duration: 0.75, ease: "easeOut" }}
             style={{
               position: "fixed",
               inset: 0,
               zIndex: 45,
-              background: "#0A0812",
+              background: "#2D5016",
               display: "grid",
               gridTemplateColumns: "1fr auto 1fr",
               alignItems: "center",
@@ -281,14 +217,8 @@ export default function Navigation() {
                     lineHeight: 0.95,
                     letterSpacing: "-0.04em",
                     color: hoveredItem === item.label
-                      ? "transparent"
+                      ? "#B5CC18"
                       : "rgba(255,255,255,0.85)",
-                    background: hoveredItem === item.label
-                      ? "linear-gradient(135deg, #9B7EC8, #00D4FF)"
-                      : "none",
-                    WebkitBackgroundClip: hoveredItem === item.label ? "text" : "unset",
-                    WebkitTextFillColor: hoveredItem === item.label ? "transparent" : "unset",
-                    backgroundClip: hoveredItem === item.label ? "text" : "unset",
                     border: "none",
                     display: "block",
                     textAlign: "left",
@@ -322,8 +252,8 @@ export default function Navigation() {
                     width: "6px",
                     height: "6px",
                     borderRadius: "50%",
-                    background: "#00D4FF",
-                    boxShadow: "0 0 8px rgba(0,212,255,0.6)",
+                    background: "#2A5A3A",
+                    boxShadow: "0 0 8px rgba(42,90,58,0.6)",
                     animation: "pulse 2s infinite",
                   }}
                 />
@@ -341,63 +271,6 @@ export default function Navigation() {
               </motion.div>
             </motion.div>
 
-            {/* Center — tall portrait image */}
-            <motion.div
-              variants={imageVariants}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              style={{
-                width: "clamp(220px, 22vw, 340px)",
-                aspectRatio: "2/3",
-                borderRadius: "4px",
-                overflow: "hidden",
-                border: "1px solid rgba(255,255,255,0.08)",
-                position: "relative",
-                flexShrink: 0,
-              }}
-            >
-              <img
-                src={WDS_DOCS}
-                alt="Featured work"
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                  objectPosition: "center top",
-                  transform: "scale(1.05)",
-                }}
-              />
-              {/* Overlay tint */}
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  background: "linear-gradient(180deg, rgba(10,8,18,0.2) 0%, rgba(10,8,18,0.5) 100%)",
-                }}
-              />
-              {/* Label on image */}
-              <div
-                style={{
-                  position: "absolute",
-                  bottom: "1.25rem",
-                  left: "1.25rem",
-                  right: "1.25rem",
-                }}
-              >
-                <span
-                  style={{
-                    fontFamily: "Space Mono, monospace",
-                    fontSize: "0.55rem",
-                    letterSpacing: "0.15em",
-                    textTransform: "uppercase",
-                    color: "rgba(255,255,255,0.4)",
-                  }}
-                >
-                  Featured — WDS
-                </span>
-              </div>
-            </motion.div>
 
             {/* Right — contact + social */}
             <motion.div
@@ -429,7 +302,7 @@ export default function Navigation() {
                   Contact
                 </span>
                 <a
-                  href="mailto:james@example.com"
+                  href="mailto:jamespsmith1082@gmail.com"
                   style={{
                     fontFamily: "Syne, sans-serif",
                     fontWeight: 600,
@@ -440,10 +313,10 @@ export default function Navigation() {
                     transition: "color 0.2s ease",
                     display: "block",
                   }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = "#00D4FF")}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = "#B5CC18")}
                   onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.7)")}
                 >
-                  james@example.com
+                  jamespsmith1082@gmail.com
                 </a>
               </motion.div>
 
@@ -461,7 +334,7 @@ export default function Navigation() {
                 >
                   Elsewhere
                 </span>
-                {["LinkedIn", "Dribbble", "Read.cv"].map((link) => (
+                {["LinkedIn", "Read.cv"].map((link) => (
                   <a
                     key={link}
                     href="#"
@@ -496,11 +369,7 @@ export default function Navigation() {
                     margin: 0,
                   }}
                 >
-                  Product Designer
-                  <br />
-                  Previously Meta
-                  <br />
-                  Based in San Francisco
+                  Product Design Leader @ Meta — Based in San Francisco
                 </p>
               </motion.div>
             </motion.div>

@@ -1,13 +1,16 @@
 /*
  * DESIGN: "Signal in the Dark" — About Section
- * Foudre-style reveals:
- * - Quote headline: line-wrap/line-inner masked reveal
- * - Stats: card-reveal with staggered --delay
- * - Skills: scale-in with stagger
- * - Body text: fade-up
+ *
+ * Wipe reveal: mirrors the nav overlay approach (Framer Motion clipPath).
+ * The entire section is clipped via inset(0 100% 0 0) → inset(0 0% 0 0)
+ * when it enters the viewport (IntersectionObserver), revealing the dark
+ * section sweeping in from the left — exactly like the menu circle expand.
+ *
+ * The section sits over a light background wrapper so the wipe is visible.
  */
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
 
 const skills = [
   "Product Design", "Design Systems", "Wearable OS",
@@ -16,282 +19,125 @@ const skills = [
 ];
 
 export default function AboutSection() {
-  const sectionRef = useRef<HTMLElement>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
 
   useEffect(() => {
     const el = sectionRef.current;
     if (!el) return;
+
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          el.classList.add("is-inview");
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setInView(true);
           observer.disconnect();
         }
       },
-      { threshold: 0.08, rootMargin: "0px 0px -5% 0px" }
+      { threshold: 0.05 }
     );
+
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
 
   return (
-    <section
-      id="about"
+    /*
+     * Outer wrapper: light page background — visible before/during the wipe.
+     * The dark motion.div clips in over it from the left.
+     */
+    <div
       ref={sectionRef}
-      className="relative overflow-hidden"
-      data-bg-color="#0A0A0A"
-      style={{ backgroundColor: "transparent", padding: "8rem 0" }}
+      id="about"
+      style={{ backgroundColor: "#f0ede6" }}
     >
-      {/* Background glow */}
-      <div
-        className="absolute pointer-events-none"
+      <motion.section
+        initial={{ clipPath: "circle(0% at 0% 100%)" }}
+        animate={inView ? { clipPath: "circle(150% at 0% 100%)" } : { clipPath: "circle(0% at 0% 100%)" }}
+        transition={{ duration: 1.4, ease: "easeOut" }}
         style={{
-          right: "-5%",
-          top: "10%",
-          width: "40vw",
-          height: "40vw",
-          background: "radial-gradient(circle, rgba(0,212,255,0.05) 0%, transparent 70%)",
+          backgroundColor: "#0a0a0a",
+          color: "#fff",
+          minHeight: "100vh",
         }}
-      />
+      >
+        <div className="max-w-[1400px] mx-auto px-8 md:px-16 py-32 md:py-40">
+          {/* Section label */}
+          <p className="text-xs tracking-[0.3em] uppercase text-white/40 mb-20">About</p>
 
-      <div style={{ maxWidth: "1360px", margin: "0 auto", padding: "0 4rem" }}>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
-
-          {/* Left: Big quote + bio */}
-          <div className="flex flex-col justify-center" style={{ gap: "2rem" }}>
-            {/* Label */}
-            <div className="fade-up">
-              <span
-                style={{
-                  fontFamily: "Space Mono, monospace",
-                  fontSize: "0.65rem",
-                  letterSpacing: "0.2em",
-                  textTransform: "uppercase",
-                  color: "rgba(255,255,255,0.2)",
-                  display: "block",
-                }}
-              >
-                About
-              </span>
-            </div>
-
-            {/* Quote — line-wrap masked reveal */}
-            <div>
-              <div className="line-wrap">
-                <p
-                  className="line-inner"
-                  style={{
-                    fontFamily: "Syne, sans-serif",
-                    fontWeight: 700,
-                    fontSize: "clamp(1.6rem, 3vw, 2.4rem)",
-                    lineHeight: 1.2,
-                    letterSpacing: "-0.02em",
-                    color: "#FFFFFF",
-                    margin: 0,
-                    "--delay": "60ms",
-                  } as React.CSSProperties}
-                >
-                  "The best interfaces
-                </p>
-              </div>
-              <div className="line-wrap">
-                <p
-                  className="line-inner"
-                  style={{
-                    fontFamily: "Syne, sans-serif",
-                    fontWeight: 700,
-                    fontSize: "clamp(1.6rem, 3vw, 2.4rem)",
-                    lineHeight: 1.2,
-                    letterSpacing: "-0.02em",
-                    margin: 0,
-                    "--delay": "160ms",
-                  } as React.CSSProperties}
-                >
-                  <span
-                    style={{
-                      background: "linear-gradient(135deg, #9B7EC8 0%, #00D4FF 100%)",
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                      backgroundClip: "text",
-                    }}
-                  >
-                    disappear."
-                  </span>
-                </p>
-              </div>
-            </div>
-
-            {/* Body text — fade-up */}
-            <div className="fade-up" style={{ "--delay": "280ms" } as React.CSSProperties}>
-              <p
-                style={{
-                  fontFamily: "DM Sans, sans-serif",
-                  fontWeight: 300,
-                  fontSize: "0.95rem",
-                  lineHeight: 1.85,
-                  color: "rgba(255,255,255,0.4)",
-                  margin: 0,
-                  maxWidth: "480px",
-                }}
-              >
-                Product designer at Meta, working at the intersection of wearable computing, AI, and spatial experiences. I've spent the last several years helping define what it means to wear intelligence — from the design system that powers the glasses OS, to the AI character that greets you each morning.
-              </p>
-            </div>
-
-            <div className="fade-up" style={{ "--delay": "360ms" } as React.CSSProperties}>
-              <p
-                style={{
-                  fontFamily: "DM Sans, sans-serif",
-                  fontWeight: 300,
-                  fontSize: "0.95rem",
-                  lineHeight: 1.85,
-                  color: "rgba(255,255,255,0.4)",
-                  margin: 0,
-                  maxWidth: "480px",
-                }}
-              >
-                I care deeply about craft, systems thinking, and the moments that make technology feel human.
-              </p>
-            </div>
+          {/* Hero quote */}
+          <div className="mb-24 md:mb-32">
+            <h2
+              className="text-5xl md:text-7xl lg:text-8xl font-black leading-[0.9] tracking-tight text-white"
+              style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+            >
+              "The best interfaces
+              <br />
+              <span className="text-white/30">disappear."</span>
+            </h2>
           </div>
 
-          {/* Right: Stats + skills */}
-          <div className="flex flex-col" style={{ gap: "3rem" }}>
-            {/* Stats — card-reveal with stagger */}
-            <div className="grid grid-cols-3 gap-6">
+          {/* Bio + stats grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 mb-24">
+            {/* Bio */}
+            <div>
+              <p className="text-lg md:text-xl text-white/80 leading-relaxed mb-8">
+                Product designer at Meta, working at the intersection of wearable computing,
+                AI, and spatial experiences. I've spent the last several years helping define
+                what it means to wear intelligence — from the design system that powers the
+                glasses OS, to the AI character that greets you each morning.
+              </p>
+              <p className="text-base text-white/50 leading-relaxed">
+                I care deeply about craft, systems thinking, and the moments that make
+                technology feel human.
+              </p>
+            </div>
+
+            {/* Stats */}
+            <div className="grid grid-cols-3 gap-8 content-start">
               {[
-                { num: "6+", label: "Years at Meta" },
-                { num: "30+", label: "Components shipped" },
-                { num: "3", label: "Products launched" },
-              ].map((stat, i) => (
-                <div
-                  key={stat.label}
-                  className="card-reveal flex flex-col gap-1"
-                  style={{
-                    "--delay": `${i * 100}ms`,
-                    borderTop: "1px solid rgba(255,255,255,0.07)",
-                    paddingTop: "1.25rem",
-                  } as React.CSSProperties}
-                >
-                  <span
-                    style={{
-                      fontFamily: "Syne, sans-serif",
-                      fontWeight: 800,
-                      fontSize: "2.5rem",
-                      lineHeight: 1,
-                      background: "linear-gradient(135deg, #7B5EA7 0%, #00D4FF 100%)",
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                      backgroundClip: "text",
-                    }}
+                { value: "4", label: "Years at Meta" },
+                { value: "60+", label: "Components shipped" },
+                { value: "3", label: "Products launched" },
+              ].map(({ value, label }) => (
+                <div key={label} className="border-t border-white/10 pt-6">
+                  <div
+                    className="text-4xl md:text-5xl font-black text-white mb-2"
+                    style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
                   >
-                    {stat.num}
-                  </span>
-                  <span
-                    style={{
-                      fontFamily: "Space Mono, monospace",
-                      fontSize: "0.6rem",
-                      letterSpacing: "0.1em",
-                      textTransform: "uppercase",
-                      color: "rgba(255,255,255,0.28)",
-                    }}
-                  >
-                    {stat.label}
-                  </span>
+                    {value}
+                  </div>
+                  <div className="text-xs text-white/40 uppercase tracking-widest leading-tight">
+                    {label}
+                  </div>
                 </div>
               ))}
             </div>
+          </div>
 
-            {/* Divider — horizontal line reveal */}
-            <div
-              className="line-reveal-h divider-gradient"
-              style={{ "--delay": "300ms" } as React.CSSProperties}
-            />
-
-            {/* Skills — scale-in with stagger */}
-            <div>
-              <div className="fade-up" style={{ marginBottom: "1rem", "--delay": "200ms" } as React.CSSProperties}>
+          {/* Skills */}
+          <div className="border-t border-white/10 pt-12 mb-24">
+            <p className="text-xs tracking-[0.3em] uppercase text-white/30 mb-6">Disciplines</p>
+            <div className="flex flex-wrap gap-3">
+              {skills.map((skill) => (
                 <span
-                  style={{
-                    fontFamily: "Space Mono, monospace",
-                    fontSize: "0.6rem",
-                    letterSpacing: "0.15em",
-                    textTransform: "uppercase",
-                    color: "rgba(255,255,255,0.22)",
-                    display: "block",
-                  }}
+                  key={skill}
+                  className="text-sm text-white/60 border border-white/10 px-4 py-2 rounded-full"
                 >
-                  Disciplines
+                  {skill}
                 </span>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {skills.map((skill, i) => (
-                  <span
-                    key={skill}
-                    className="tag-pill scale-in"
-                    style={{ "--delay": `${280 + i * 50}ms` } as React.CSSProperties}
-                  >
-                    {skill}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            {/* Currently — card-reveal */}
-            <div
-              className="card-reveal"
-              style={{
-                "--delay": "400ms",
-                padding: "1.5rem",
-                border: "1px solid rgba(123,94,167,0.18)",
-                borderRadius: "4px",
-                background: "rgba(123,94,167,0.04)",
-              } as React.CSSProperties}
-            >
-              <div className="flex items-center gap-2" style={{ marginBottom: "0.75rem" }}>
-                <div
-                  style={{
-                    width: "6px",
-                    height: "6px",
-                    borderRadius: "50%",
-                    backgroundColor: "#00D4FF",
-                    animation: "pulse 2s ease-in-out infinite",
-                  }}
-                />
-                <span
-                  style={{
-                    fontFamily: "Space Mono, monospace",
-                    fontSize: "0.6rem",
-                    letterSpacing: "0.12em",
-                    textTransform: "uppercase",
-                    color: "rgba(0,212,255,0.65)",
-                  }}
-                >
-                  Currently
-                </span>
-              </div>
-              <p
-                style={{
-                  fontFamily: "DM Sans, sans-serif",
-                  fontSize: "0.9rem",
-                  lineHeight: 1.6,
-                  color: "rgba(255,255,255,0.48)",
-                  margin: 0,
-                }}
-              >
-                Product Designer at Meta · Wearable Computing & AI Experiences
-              </p>
+              ))}
             </div>
           </div>
-        </div>
-      </div>
 
-      <style>{`
-        @keyframes pulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.4; }
-        }
-      `}</style>
-    </section>
+          {/* Currently */}
+          <div className="border-t border-white/10 pt-12">
+            <p className="text-xs tracking-[0.3em] uppercase text-white/30 mb-4">Currently</p>
+            <p className="text-white/70 text-base">
+              Product Designer at Meta · Wearable Computing &amp; AI Experiences
+            </p>
+          </div>
+        </div>
+      </motion.section>
+    </div>
   );
 }

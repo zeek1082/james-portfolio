@@ -31,14 +31,14 @@ export default function ContactSection() {
       id="contact"
       ref={sectionRef}
       className="relative overflow-hidden"
-      data-bg-color="#080808"
+      data-bg-color="#E8E2DB"
       style={{ backgroundColor: "transparent", padding: "10rem 0 6rem" }}
     >
       {/* Background gradient */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: "radial-gradient(ellipse 80% 60% at 50% 100%, rgba(123,94,167,0.1) 0%, transparent 70%)",
+          background: "radial-gradient(ellipse 80% 60% at 50% 100%, rgba(26,58,42,0.07) 0%, transparent 70%)",
         }}
       />
 
@@ -56,7 +56,7 @@ export default function ContactSection() {
                 fontSize: "0.65rem",
                 letterSpacing: "0.2em",
                 textTransform: "uppercase",
-                color: "rgba(255,255,255,0.22)",
+                color: "rgba(14,12,10,0.3)",
               }}
             >
               Let's work together
@@ -74,7 +74,7 @@ export default function ContactSection() {
                   fontSize: "clamp(3rem, 8vw, 7rem)",
                   lineHeight: 0.95,
                   letterSpacing: "-0.03em",
-                  color: "#FFFFFF",
+                  color: "#0E0C0A",
                   margin: 0,
                   "--delay": "60ms",
                 } as React.CSSProperties}
@@ -97,7 +97,7 @@ export default function ContactSection() {
               >
                 <span
                   style={{
-                    background: "linear-gradient(135deg, #7B5EA7 0%, #00D4FF 100%)",
+                    backgroundImage: "linear-gradient(135deg, #1A3A2A 0%, #B5CC18 100%)",
                     WebkitBackgroundClip: "text",
                     WebkitTextFillColor: "transparent",
                     backgroundClip: "text",
@@ -117,12 +117,12 @@ export default function ContactSection() {
                 fontWeight: 300,
                 fontSize: "1.05rem",
                 lineHeight: 1.75,
-                color: "rgba(255,255,255,0.38)",
+                color: "rgba(14,12,10,0.45)",
                 maxWidth: "460px",
                 margin: 0,
               }}
             >
-              I'm selectively open to new opportunities — especially at the intersection of AI, wearables, and spatial computing.
+              I'm selectively open to new opportunities — especially at the intersection of Design Systems, AI, wearables, and spatial computing.
             </p>
           </div>
 
@@ -147,12 +147,12 @@ export default function ContactSection() {
                 fontSize: "0.65rem",
                 letterSpacing: "0.15em",
                 textTransform: "uppercase",
-                color: "rgba(255,255,255,0.28)",
+                color: "rgba(14,12,10,0.35)",
                 textDecoration: "none",
                 transition: "color 0.3s ease",
               }}
-              onMouseEnter={(e) => ((e.target as HTMLElement).style.color = "rgba(255,255,255,0.75)")}
-              onMouseLeave={(e) => ((e.target as HTMLElement).style.color = "rgba(255,255,255,0.28)")}
+              onMouseEnter={(e) => ((e.target as HTMLElement).style.color = "rgba(14,12,10,0.85)")}
+              onMouseLeave={(e) => ((e.target as HTMLElement).style.color = "rgba(14,12,10,0.35)")}
             >
               LinkedIn ↗
             </a>
@@ -163,7 +163,7 @@ export default function ContactSection() {
         <div
           className="mt-24 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 fade-up"
           style={{
-            borderTop: "1px solid rgba(255,255,255,0.05)",
+            borderTop: "1px solid rgba(14,12,10,0.08)",
             "--delay": "600ms",
           } as React.CSSProperties}
         >
@@ -175,7 +175,7 @@ export default function ContactSection() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                background: "linear-gradient(135deg, #7B5EA7, #00D4FF)",
+                background: "linear-gradient(135deg, #1A3A2A, #B5CC18)",
                 clipPath: "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)",
               }}
             >
@@ -188,10 +188,10 @@ export default function ContactSection() {
                 fontFamily: "Space Mono, monospace",
                 fontSize: "0.6rem",
                 letterSpacing: "0.1em",
-                color: "rgba(255,255,255,0.18)",
+                color: "rgba(14,12,10,0.3)",
               }}
             >
-              James Smith · Product Designer
+              James Smith · Product Design Leader
             </span>
           </div>
           <span
@@ -199,10 +199,10 @@ export default function ContactSection() {
               fontFamily: "Space Mono, monospace",
               fontSize: "0.6rem",
               letterSpacing: "0.08em",
-              color: "rgba(255,255,255,0.13)",
-            }}
-          >
-            © 2026 · Designed with intent
+                color: "rgba(14,12,10,0.22)",
+              }}
+            >
+              © 2026 · Designed with intent
           </span>
         </div>
       </div>

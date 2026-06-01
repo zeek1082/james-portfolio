@@ -21,7 +21,7 @@ export function useBackgroundMorph(bgRef: React.RefObject<HTMLDivElement | null>
 
     // Apply CSS transition for smooth color morphing (like Foudre)
     bg.style.transition = "background-color 0.7s cubic-bezier(0.23, 1, 0.32, 1)";
-    bg.style.backgroundColor = "#080808";
+    bg.style.backgroundColor = "#F2EDE8";
 
     function morphTo(color: string) {
       if (bg) bg.style.backgroundColor = color;
@@ -32,7 +32,7 @@ export function useBackgroundMorph(bgRef: React.RefObject<HTMLDivElement | null>
     const observers: IntersectionObserver[] = [];
 
     sections.forEach((section) => {
-      const color = (section as HTMLElement).dataset.bgColor || "#080808";
+      const color = (section as HTMLElement).dataset.bgColor || "#F2EDE8";
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {

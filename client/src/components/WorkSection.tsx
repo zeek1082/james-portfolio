@@ -1,696 +1,822 @@
-/*
- * DESIGN: "Signal in the Dark" — Work Section
+/**
+ * WorkSection — Sticky scroll-driven card stack
  *
- * Foudre-exact layout:
- * - Each project: full-width section, project shortTitle at MASSIVE scale
- *   as typographic wallpaper (outline text, very large, behind the cards)
- * - 1–2 tall portrait-format image cards per project, layered/offset (collage-in-motion)
- * - Cards slide up at different speeds on scroll (parallax depth effect)
- * - Image is dominant visual; text panel is secondary
- * - Foudre-style card-reveal: translateY(40%) → 0 + opacity 0→1
- * - Image scale-in: scale(1.15) → scale(1) from overflow:hidden container
+ * Design: Dark editorial / Brutalist Precision
+ *
+ * Mechanic:
+ *   - Left panel: sticky info, updates per active card
+ *   - All cards rest at centerLeft = (window.innerWidth / 2) - (cardWidth / 2)
+ *     so the resting position is centered on the FULL page (not just the card area)
+ *   - Card 1: pinned at left: centerLeft, never moves
+ *   - Cards 2–N: absolutely positioned at left: centerLeft
+ *     Each starts with translateX = (j)*step (off to the right)
+ *     As scroll progresses, translateX moves toward 0 (docking at centerLeft)
+ *
+ * centerLeft = (vw / 2) - (cardW / 2)  — computed in JS at scroll time
+ * step = cardWidth + gap
  */
 
-import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Link, useLocation, useRouter } from "wouter";
+import { scrollToTopImmediate } from "@/hooks/useSmoothScroll";
+import HoverScaleCard from "./HoverScaleCard";
 
-gsap.registerPlugin(ScrollTrigger);
+interface Project {
+  id: number;
+  num: string;
+  category: string;
+  title: string;
+  description: string;
+  tags: string[];
+  image: string;
+  bgColor: string;
+  accentColor: string;
+  slug: string;
+}
 
-const WDS_DOCS = "/manus-storage/wds-docs_a1579d02.png";
-const WDS_OPS = "/manus-storage/wds-ops-tool_eb8d5de3.png";
-const AR_TOOL = "/manus-storage/ar-tool-ui_4e0d1460.png";
-const AR_PATHS = "/manus-storage/ar-tool-paths_40f68d92.png";
-const RAYBAN = "/manus-storage/rayban-meta-hero_f845eb03.png";
-const AI_IDENTITY = "https://d2xsxph8kpxj0f.cloudfront.net/310519663492833389/E4X24s2bgzcXDLXF5dJoLn/project-ai-identity-8eLbH6vp6gDYVbQjgUXGyK.webp";
-
-const projects = [
+const projects: Project[] = [
   {
-    id: "wds",
-    bgColor: "#0A0812",
-    accentColor: "#7B5EA7",
+    id: 1,
     num: "01",
-    label: "Design Systems",
-    title: "Wearable Design System",
-    shortTitle: "WDS",
-    description: "Built the foundational design language for Meta's smart glasses OS — a 30+ component library covering Home Navigation, Activity Panel, Live Activities, App Grid, and Controls.",
-    tags: ["Design Systems", "Wearable OS", "Component Library"],
-    images: [WDS_DOCS, WDS_OPS],
+    category: "DESIGN SYSTEMS",
+    title: "Ray-Ban Meta Display Design System",
+    description:
+      "A design system built for a light passthrough display — mitigating optical artifacts while maintaining visual clarity.",
+    tags: ["DESIGN SYSTEMS", "WEARABLE OS"],
+    image: "/manus-storage/rayban-meta-hero_1a588487.png",
+    bgColor: "#F2EDE8",
+    accentColor: "#1A3A2A",
+    slug: "rayban-display-ds",
   },
   {
-    id: "ar-tool",
-    bgColor: "#080C12",
-    accentColor: "#0090D4",
+    id: 2,
     num: "02",
-    label: "Spatial Computing",
-    title: "Spatial AR Authoring Tool",
-    shortTitle: "AR Tool",
-    description: "An internal tool for authoring AR experiences in real-world spaces. Floorplan view, camera path editor, timeline, walk generation, and depth-of-field controls.",
-    tags: ["AR/XR", "Spatial Design", "Camera Systems"],
-    images: [AR_TOOL, AR_PATHS],
+    category: "DESIGN SYSTEMS",
+    title: "Wearables Color System",
+    description:
+      "A unified color token system spanning smartwatches, phones, and AR display glasses — with third-party theming for Spotify, Apple Music, and more.",
+    tags: ["COLOR SYSTEMS", "CROSS-DEVICE"],
+    image: "/manus-storage/wearables-color-system-card_09dd2118.png",
+    bgColor: "#F5F1EC",
+    accentColor: "#1A3A2A",
+    slug: "wearables-color-system",
   },
   {
-    id: "day0",
-    bgColor: "#0C0808",
-    accentColor: "#D4700A",
+    id: 3,
     num: "03",
-    label: "Onboarding Experience",
-    title: "Ray-Ban Meta Day 0",
-    shortTitle: "Day 0",
-    description: "The first-run setup experience for new Ray-Ban Meta owners — connecting WhatsApp and Instagram, configuring AI preferences, and establishing the emotional tone of the product.",
-    tags: ["Consumer UX", "Onboarding", "Ray-Ban Meta"],
-    images: [RAYBAN],
+    category: "NEURAL INPUT",
+    title: "EMG Handwriting",
+    description:
+      "The first consumer EMG text input — write messages by moving your fingers through the air. Shipped spring 2026.",
+    tags: ["NEURAL INPUT", "EMG"],
+    image: "/manus-storage/neural-input-card_b0c02bd8.png",
+    bgColor: "#F2EDE8",
+    accentColor: "#1A3A2A",
+    slug: "emg-handwriting",
   },
   {
-    id: "wds-ops",
-    bgColor: "#08100A",
-    accentColor: "#2A9D5C",
+    id: 4,
     num: "04",
-    label: "Internal Tooling",
-    title: "WDS Ops Tool",
-    shortTitle: "Ops",
-    description: "An internal design operations tool for managing the WDS component lifecycle — tracking adoption, surfacing inconsistencies, and enabling cross-team contribution workflows.",
-    tags: ["Design Ops", "Internal Tools", "Workflow"],
-    images: [WDS_OPS, WDS_DOCS],
+    category: "AI SYSTEMS",
+    title: "AI Assistant Device",
+    description:
+      "A watch with no OS — just an AI that learns what you need. Two design systems: a system language and a user theming framework.",
+    tags: ["AI SYSTEMS", "VIBE CODING"],
+    image: "/manus-storage/ai-smartwatch-card_6e67093b.png",
+    bgColor: "#F5F1EC",
+    accentColor: "#1A3A2A",
+    slug: "ai-smartwatch",
   },
   {
-    id: "ai-motion",
-    bgColor: "#0A0A14",
-    accentColor: "#5B6FD4",
+    id: 5,
     num: "05",
-    label: "AI Motion Design",
-    title: "Meta AI Motion System",
-    shortTitle: "Motion",
-    description: "A comprehensive motion design system for Meta AI on glasses — messaging, contact search, notifications, autocorrect, text input, EDU flows, discovery, and accessibility.",
-    tags: ["Motion Design", "AI", "Interaction Design"],
-    images: [AR_PATHS],
-  },
-  {
-    id: "ai-identity",
-    bgColor: "#0D0810",
-    accentColor: "#9B5EA7",
-    num: "06",
-    label: "AI Identity",
-    title: "Meta AI Identity & Characters",
-    shortTitle: "Identity",
-    description: "The personality layer of Meta AI — hero identity images, fidget animations, spatial character expressions, and the visual language for how AI presents itself across Meta's wearable ecosystem.",
-    tags: ["AI Identity", "Character Design", "Animation"],
-    images: [AI_IDENTITY],
+    category: "TOOLING & AI",
+    title: "Design Systems Tooling",
+    description:
+      "AI-powered design tooling — from system linters to a full vibe-coding IDE built on web components.",
+    tags: ["AI TOOLING", "FIGMA PLUGINS"],
+    image: "/manus-storage/ds-tooling-card_440191c4.png",
+    bgColor: "#F2EDE8",
+    accentColor: "#1A3A2A",
+    slug: "ds-tooling",
   },
 ];
 
-// Hook: adds .is-inview when element enters viewport
-function useInView(threshold = 0.05, rootMargin = "0px 0px -5% 0px") {
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          el.classList.add("is-inview");
-          observer.disconnect();
-        }
-      },
-      { threshold, rootMargin }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [threshold, rootMargin]);
-  return ref;
-}
+const CARD_GAP_VW = 3; // gap between cards in vw
+const TOTAL_SCROLL_MULTIPLIER = 7; // total scroll height = N * this * 100vh
 
-// A single project section with Foudre-style stacked portrait cards
-function ProjectSection({
-  id, bgColor, accentColor, num, label, title, shortTitle, description, tags, images, index,
-}: typeof projects[0] & { index: number }) {
-  const sectionRef = useInView(0.04, "0px 0px -3% 0px");
-  const card1Ref = useRef<HTMLDivElement>(null);
-  const card2Ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      if (card1Ref.current) {
-        gsap.to(card1Ref.current, {
-          y: "6%",
-          ease: "none",
-          scrollTrigger: {
-            trigger: card1Ref.current,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 1,
-          },
-        });
-      }
-      if (card2Ref.current) {
-        gsap.to(card2Ref.current, {
-          y: "-6%",
-          ease: "none",
-          scrollTrigger: {
-            trigger: card2Ref.current,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 1,
-          },
-        });
-      }
-    });
-    return () => ctx.revert();
-  }, []);
-
-  const isEven = index % 2 === 0;
-  const hasTwo = images.length > 1;
-
+function CaseStudyButton({ active }: { active: Project }) {
+  const [, setLocation] = useLocation();
   return (
-    <div
-      ref={sectionRef}
-      id={id}
-      data-bg-color={bgColor}
+    <button
+      onClick={() => setLocation(`/project/${active.slug}`)}
       style={{
-        position: "relative",
-        backgroundColor: "transparent",
-        padding: "10rem 0 14rem",
-        overflow: "hidden",
+        fontFamily: "Space Mono, monospace",
+        fontSize: "0.52rem",
+        letterSpacing: "0.15em",
+        textTransform: "uppercase",
+        color: active.accentColor,
+        background: "transparent",
+        border: `1px solid ${active.accentColor}50`,
+        borderRadius: "2px",
+        padding: "0.75rem 1.25rem",
+        cursor: "pointer",
+        alignSelf: "flex-start",
+        transition: "all 0.2s ease",
+        animation: "fadeSlideUp 0.5s 0.2s cubic-bezier(0.23,1,0.32,1) both",
+      }}
+      onMouseEnter={(e) => {
+        (e.currentTarget as HTMLButtonElement).style.background = `${active.accentColor}10`;
+      }}
+      onMouseLeave={(e) => {
+        (e.currentTarget as HTMLButtonElement).style.background = "transparent";
       }}
     >
-      {/* ── MASSIVE BACKGROUND TITLE (typographic wallpaper) ── */}
+      View Case Study →
+    </button>
+  );
+}
+
+export default function WorkSection() {
+  const router = useRouter();
+  const [, navigate] = useLocation();
+  const outerRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const rafRef = useRef<number>(0);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  // Drag-distance guard: track mouse-down Y to prevent accidental navigation during scroll
+  const mouseDownScrollY = useRef<number>(0);
+  const DRAG_THRESHOLD = 8; // px — if scroll moved more than this, ignore the click
+
+  const handleCardMouseDown = useCallback(() => {
+    mouseDownScrollY.current = window.scrollY;
+  }, []);
+
+  const navigateToProject = useCallback((slug: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    // Guard: if the page scrolled significantly since mousedown, treat as scroll not click
+    const scrollDelta = Math.abs(window.scrollY - mouseDownScrollY.current);
+    if (scrollDelta > DRAG_THRESHOLD) return;
+    // Use Lenis scrollTo(0, immediate) — native scrollTo is intercepted by Lenis
+    scrollToTopImmediate();
+    navigate(`/project/${slug}`);
+    // Fire again after navigation in case Lenis restores position
+    requestAnimationFrame(() => scrollToTopImmediate());
+    setTimeout(() => scrollToTopImmediate(), 50);
+  }, [navigate]);
+
+  const N = projects.length - 1; // 4 track cards (cards 2-5)
+  // Refs for each of the track cards
+  const cardRefs = useRef<(HTMLElement | null)[]>([null, null, null, null, null]);
+  // Ref for card 1 (pinned) so we can read its width
+  const card1Ref = useRef<HTMLElement | null>(null);
+  // Ref to store computed centerLeft so CSS left can be kept in sync
+  const centerLeftRef = useRef<number>(0);
+  // Ref for the card area container so we can measure its left offset
+  const cardAreaRef = useRef<HTMLDivElement | null>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const headerRafRef = useRef<number>(0);
+  const lastHeaderScrollY = useRef<number>(0);
+  const activeIndexRef = useRef<number>(0); // guards against redundant setState
+
+  // Cached layout measurements — recomputed only on resize, not every scroll tick
+  const cachedLayout = useRef<{ cardW: number; gapPx: number; step: number; centerLeft: number; outerHeight: number; outerTop: number } | null>(null);
+
+  const recomputeLayout = useCallback(() => {
+    const card1El = card1Ref.current;
+    const cardAreaEl = cardAreaRef.current;
+    const outer = outerRef.current;
+    if (!card1El || !cardAreaEl || !outer) return;
+    const cardW = card1El.offsetWidth;
+    const gapPx = window.innerWidth * (CARD_GAP_VW / 100);
+    const step = cardW + gapPx;
+    const cardAreaOffsetLeft = cardAreaEl.getBoundingClientRect().left;
+    const centerLeft = (window.innerWidth / 2) - (cardW / 2) - cardAreaOffsetLeft;
+    const outerHeight = outer.offsetHeight;
+    const outerTop = outer.getBoundingClientRect().top + window.scrollY; // absolute top
+    cachedLayout.current = { cardW, gapPx, step, centerLeft, outerHeight, outerTop };
+  }, []);
+
+  useEffect(() => {
+    recomputeLayout();
+    const ro = new ResizeObserver(recomputeLayout);
+    if (outerRef.current) ro.observe(outerRef.current);
+    window.addEventListener('resize', recomputeLayout, { passive: true });
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', recomputeLayout);
+    };
+  }, [recomputeLayout]);
+
+  const onScroll = useCallback(() => {
+    cancelAnimationFrame(rafRef.current);
+    rafRef.current = requestAnimationFrame(() => {
+      const layout = cachedLayout.current;
+      if (!layout) { recomputeLayout(); return; }
+
+      const viewH = window.innerHeight;
+      // Use absolute outerTop + current scrollY to avoid getBoundingClientRect in hot path
+      const outerTop = layout.outerTop - window.scrollY;
+      const { outerHeight, step, centerLeft } = layout;
+
+      const scrolled = Math.max(0, -outerTop);
+      const maxScroll = outerHeight - viewH;
+      if (maxScroll <= 0) return;
+
+      const progress = Math.min(1, scrolled / maxScroll);
+
+      const card1El = card1Ref.current;
+      if (!card1El) return;
+
+      centerLeftRef.current = centerLeft;
+
+      // Keep card 1 pinned at centerLeft; clear the CSS translateX(-50%) fallback
+      card1El.style.left = `${centerLeft}px`;
+      card1El.style.transform = "none";
+
+      // Apply ease-out curve so motion decelerates smoothly into docking positions
+      const eased = 1 - Math.pow(1 - progress, 2.2);
+      // Travel (N-1)*step so the last card (j=N-1) ends at +step (one step right of card 1)
+      // giving a final two-card side-by-side view instead of full stack.
+      const groupOffset = eased * (N - 1) * step;
+
+      // activeJ = highest j whose card has docked (translateX ≈ step or less)
+      let activeJ = -1;
+
+      for (let j = 0; j < N; j++) {
+        const el = cardRefs.current[j];
+        if (!el) continue;
+        // Position each track card at centerLeft so it rests centered when translateX=0
+        el.style.left = `${centerLeft}px`;
+        const rawOffset = (j + 1) * step - groupOffset;
+        // Last card clamps at step (not 0) so it stays one card-width to the right
+        const minOffset = j === N - 1 ? step : 0;
+        const offset = Math.max(minOffset, rawOffset);
+        el.style.transform = `translateX(${offset}px)`;
+        if (rawOffset <= minOffset + 2) {
+          activeJ = j;
+        }
+      }
+
+      const nextIndex = activeJ + 1;
+      if (nextIndex !== activeIndexRef.current) {
+        activeIndexRef.current = nextIndex;
+        setActiveIndex(nextIndex);
+      }
+    });
+  }, [N, recomputeLayout]);
+
+  useEffect(() => {
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(rafRef.current);
+    };
+  }, [onScroll]);
+
+  // Split parallax + chromatic aberration on section header
+  useEffect(() => {
+    const onHeaderScroll = () => {
+      cancelAnimationFrame(headerRafRef.current);
+      headerRafRef.current = requestAnimationFrame(() => {
+        const header = headerRef.current;
+        if (!header) return;
+
+        const rect = header.getBoundingClientRect();
+        const viewH = window.innerHeight;
+        // progress: 0 when header enters bottom of viewport, 1 when it exits top
+        const progress = Math.min(1, Math.max(0, (viewH - rect.top) / (viewH + rect.height)));
+
+        // Parallax: whole heading slides left
+        const h = headingRef.current;
+        if (!h) return;
+        const maxShift = window.innerWidth * 0.1;
+        h.style.transform = `translateX(${progress * maxShift}px)`;
+
+        // Chromatic aberration: velocity-based + progress-based
+        const currentY = window.scrollY;
+        const velocity = Math.abs(currentY - lastHeaderScrollY.current);
+        lastHeaderScrollY.current = currentY;
+        const velocityIntensity = Math.min(velocity * 0.3, 14);
+        const progressIntensity = progress * 8;
+        const intensity = velocityIntensity + progressIntensity;
+        h.style.textShadow = intensity > 0.5
+          ? `${-intensity * 0.6}px 0 rgba(255,0,80,0.55), ${intensity * 0.6}px 0 rgba(0,220,255,0.55)`
+          : "none";
+      });
+    };
+    window.addEventListener("scroll", onHeaderScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onHeaderScroll);
+      cancelAnimationFrame(headerRafRef.current);
+    };
+  }, []);
+
+  const active = projects[activeIndex];
+
+  return (
+    <div id="work">
+      {/* Section header */}
       <div
-        aria-hidden="true"
+        ref={headerRef}
         style={{
-          position: "absolute",
-          top: "50%",
-          left: isEven ? "-1%" : "auto",
-          right: isEven ? "auto" : "-1%",
-          transform: "translateY(-50%)",
-          fontFamily: "Syne, sans-serif",
-          fontWeight: 800,
-          fontSize: "clamp(8rem, 20vw, 22rem)",
-          lineHeight: 0.85,
-          letterSpacing: "-0.04em",
-          color: "transparent",
-          WebkitTextStroke: `1px ${accentColor}28`,
-          whiteSpace: "nowrap",
-          pointerEvents: "none",
-          userSelect: "none",
-          zIndex: 0,
+          padding: "8rem clamp(2rem, 5vw, 5rem) 5rem",
+          borderBottom: "1px solid rgba(255,255,255,0.06)",
+          overflow: "hidden",
         }}
       >
-        {shortTitle}
-      </div>
-
-      {/* ── AMBIENT GLOW ── */}
-      <div
-        style={{
-          position: "absolute",
-          [isEven ? "left" : "right"]: "-10%",
-          top: "20%",
-          width: "60vw",
-          height: "60vw",
-          background: `radial-gradient(circle, ${accentColor}09 0%, transparent 65%)`,
-          pointerEvents: "none",
-          zIndex: 0,
-        }}
-      />
-
-      <div
-        style={{
-          maxWidth: "1400px",
-          margin: "0 auto",
-          padding: "0 clamp(1.5rem, 5vw, 5rem)",
-          position: "relative",
-          zIndex: 1,
-        }}
-      >
-        {/* ── TOP ROW: Number + Label ── */}
-        <div
-          className="fade-up"
+        <span
           style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "1rem",
-            marginBottom: "4rem",
-            "--delay": "0ms",
-          } as React.CSSProperties}
-        >
-          <span
-            style={{
-              fontFamily: "Space Mono, monospace",
-              fontSize: "0.65rem",
-              letterSpacing: "0.18em",
-              color: accentColor,
-              opacity: 0.9,
-            }}
-          >
-            {num}
-          </span>
-          <div style={{ height: "1px", width: "40px", background: `linear-gradient(90deg, ${accentColor}70, transparent)` }} />
-          <span
-            style={{
-              fontFamily: "Space Mono, monospace",
-              fontSize: "0.58rem",
-              letterSpacing: "0.22em",
-              textTransform: "uppercase",
-              color: "rgba(255,255,255,0.22)",
-            }}
-          >
-            {label}
-          </span>
-          <div style={{ flex: 1, height: "1px", background: "rgba(255,255,255,0.04)" }} />
-          <span
-            style={{
-              fontFamily: "Space Mono, monospace",
-              fontSize: "0.55rem",
-              letterSpacing: "0.12em",
-              color: "rgba(255,255,255,0.12)",
-            }}
-          >
-            {num} / 06
-          </span>
-        </div>
-
-        {/* ── MAIN LAYOUT: Images (dominant) + Text ── */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: isEven ? "1.1fr 0.5fr" : "0.5fr 1.1fr",
-            gap: "clamp(2rem, 5vw, 7rem)",
-            alignItems: "flex-start",
+            fontFamily: "Space Mono, monospace",
+            fontSize: "0.58rem",
+            letterSpacing: "0.22em",
+            textTransform: "uppercase",
+            color: "rgba(255,255,255,0.3)",
+            display: "block",
+            marginBottom: "1.5rem",
           }}
         >
-          {/* ── IMAGE COLLAGE (dominant side) ── */}
+          Selected Work
+        </span>
+        <h2
+          ref={headingRef}
+          style={{
+            fontFamily: "'Barlow Condensed', sans-serif",
+            fontWeight: 800,
+            fontSize: "clamp(3rem, 8vw, 7rem)",
+            lineHeight: 1.0,
+            letterSpacing: "-0.035em",
+            color: "#0E0C0A",
+            margin: 0,
+            willChange: "transform",
+          }}
+        >
+          Some of my recent work
+        </h2>
+      </div>
+
+      {/* Outer scroll wrapper — tall enough for all transitions */}
+      <div
+        ref={outerRef}
+        style={{ height: `${TOTAL_SCROLL_MULTIPLIER * 100}vh`, position: "relative" }}
+      >
+        {/* Sticky full-viewport frame */}
+        <div
+          style={{
+            position: "sticky",
+            top: 0,
+            height: "100vh",
+            overflow: "hidden",
+            backgroundColor: active.bgColor,
+            transition: "background-color 0.7s cubic-bezier(0.23, 1, 0.32, 1)",
+            display: "flex",
+            flexDirection: "row",
+            contain: "layout style",
+          }}
+        >
+          {/* Noise grain overlay */}
           <div
             style={{
-              order: isEven ? 1 : 2,
-              position: "relative",
-              paddingBottom: hasTwo ? "10rem" : "0",
+              position: "absolute",
+              inset: 0,
+              backgroundImage:
+                "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E\")",
+              pointerEvents: "none",
+              zIndex: 0,
             }}
-          >
-            {/* Primary card */}
-            <div
-              className="card-reveal"
-              style={{ "--delay": "0ms" } as React.CSSProperties}
-            >
-              <div ref={card1Ref}>
-                <div
-                  className="img-reveal-wrap img-card-hover"
-                  style={{
-                    borderRadius: "3px",
-                    border: `1px solid ${accentColor}1A`,
-                    aspectRatio: hasTwo ? "4/3" : "16/10",
-                    position: "relative",
-                    boxShadow: `0 48px 96px rgba(0,0,0,0.55), 0 0 0 1px ${accentColor}0E`,
-                  }}
-                >
-                  <img
-                    src={images[0]}
-                    alt={title}
-                    className="img-reveal"
-                    style={{ objectPosition: "center top" }}
-                  />
-                  <div
-                    style={{
-                      position: "absolute",
-                      inset: 0,
-                      background: `linear-gradient(160deg, ${accentColor}14 0%, transparent 55%)`,
-                      pointerEvents: "none",
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
+          />
 
-            {/* Secondary card — offset, layered */}
-            {hasTwo && (
-              <div
-                className="card-reveal"
-                style={{
-                  "--delay": "200ms",
-                  position: "absolute",
-                  bottom: 0,
-                  right: isEven ? "-6%" : "auto",
-                  left: isEven ? "auto" : "-6%",
-                  width: "58%",
-                } as React.CSSProperties}
-              >
-                <div ref={card2Ref}>
-                  <div
-                  className="img-reveal-wrap img-card-hover"
-                  style={{
-                    borderRadius: "3px",
-                    border: `1px solid ${accentColor}24`,
-                    aspectRatio: "4/3",
-                    position: "relative",
-                    boxShadow: `0 32px 64px rgba(0,0,0,0.65), 0 0 0 1px ${accentColor}16`,
-                  }}
-                  >
-                    <img
-                      src={images[1]}
-                      alt={`${title} — detail`}
-                      className="img-reveal"
-                      style={{ objectPosition: "center top" }}
-                    />
-                    <div
-                      style={{
-                        position: "absolute",
-                        inset: 0,
-                        background: `linear-gradient(160deg, ${accentColor}10 0%, transparent 55%)`,
-                        pointerEvents: "none",
-                      }}
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* ── TEXT PANEL ── */}
+          {/* Ambient glow */}
           <div
             style={{
-              order: isEven ? 2 : 1,
+              position: "absolute",
+              right: "10%",
+              top: "20%",
+              width: "50vw",
+              height: "50vw",
+              background: `radial-gradient(circle, ${active.accentColor}12 0%, transparent 65%)`,
+              transition: "background 0.7s ease",
+              pointerEvents: "none",
+              zIndex: 0,
+            }}
+          />
+
+          {/* ── LEFT PANEL ── */}
+          <div
+            style={{
+              width: "clamp(260px, 28vw, 380px)",
+              flexShrink: 0,
+              position: "relative",
+              zIndex: 20,
+              backgroundColor: active.bgColor,
+              transition: "background-color 0.7s cubic-bezier(0.23, 1, 0.32, 1)",
               display: "flex",
               flexDirection: "column",
-              gap: "1.8rem",
-              paddingTop: "clamp(1rem, 5vw, 6rem)",
+              justifyContent: "center",
+              padding: "0 clamp(1.5rem, 3vw, 3rem)",
             }}
           >
-            {/* Title */}
-            <div>
-              <div className="line-wrap" style={{ overflow: "hidden" }}>
-                <h2
-                  className="line-inner"
-                  style={{
-                    fontFamily: "Syne, sans-serif",
-                    fontWeight: 700,
-                    fontSize: "clamp(1.8rem, 3vw, 3.2rem)",
-                    lineHeight: 1.05,
-                    letterSpacing: "-0.03em",
-                    color: "#FFFFFF",
-                    margin: 0,
-                    "--delay": "120ms",
-                  } as React.CSSProperties}
-                >
-                  {title}
-                </h2>
-              </div>
+            {/* Counter */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.75rem",
+                marginBottom: "2.5rem",
+              }}
+            >
+              <span
+                style={{
+                  fontFamily: "Space Mono, monospace",
+                  fontSize: "0.65rem",
+                  color: active.accentColor,
+                  letterSpacing: "0.1em",
+                  transition: "color 0.4s ease",
+                }}
+              >
+                {active.num}
+              </span>
+              <div
+                style={{
+                  flex: 1,
+                  height: "1px",
+                  background: `linear-gradient(to right, ${active.accentColor}60, transparent)`,
+                  transition: "background 0.4s ease",
+                }}
+              />
+              <span
+                style={{
+                  fontFamily: "Space Mono, monospace",
+                  fontSize: "0.55rem",
+                  color: "rgba(14,12,10,0.3)",
+                  letterSpacing: "0.1em",
+                }}
+              >
+                / {String(projects.length).padStart(2, "0")}
+              </span>
             </div>
 
-            {/* Accent rule */}
-            <div
-              className="clip-reveal"
+            <span
+              key={`cat-${activeIndex}`}
               style={{
+                fontFamily: "Space Mono, monospace",
+                fontSize: "0.52rem",
+                letterSpacing: "0.2em",
+                textTransform: "uppercase",
+                color: active.accentColor,
+                marginBottom: "1rem",
+                animation: "fadeSlideUp 0.4s cubic-bezier(0.23,1,0.32,1) both",
+              }}
+            >
+              {active.category}
+            </span>
+
+            <h3
+              key={`title-${activeIndex}`}
+              style={{
+                fontFamily: "'Space Mono', monospace",
+                fontWeight: 400,
+                fontSize: "clamp(1.1rem, 1.8vw, 1.6rem)",
+                lineHeight: 1.3,
+                letterSpacing: "-0.01em",
+                color: "#0E0C0A",
+                margin: "0 0 1.25rem",
+                animation: "fadeSlideUp 0.45s 0.05s cubic-bezier(0.23,1,0.32,1) both",
+              }}
+            >
+              {active.title}
+            </h3>
+
+            <div
+              style={{
+                width: "2rem",
                 height: "2px",
-                width: "52px",
-                background: `linear-gradient(90deg, ${accentColor}, transparent)`,
-                borderRadius: "1px",
-                "--delay": "260ms",
-              } as React.CSSProperties}
+                backgroundColor: active.accentColor,
+                marginBottom: "1.25rem",
+                transition: "background-color 0.4s ease",
+              }}
             />
 
-            {/* Description */}
             <p
-              className="fade-up"
+              key={`desc-${activeIndex}`}
               style={{
-                fontFamily: "DM Sans, sans-serif",
-                fontWeight: 300,
-                fontSize: "0.88rem",
-                lineHeight: 1.9,
-                color: "rgba(255,255,255,0.38)",
-                margin: 0,
-                "--delay": "300ms",
-              } as React.CSSProperties}
+                fontFamily: "Inter, sans-serif",
+                fontSize: "0.78rem",
+                lineHeight: 1.65,
+                color: "rgba(14,12,10,0.55)",
+                margin: "0 0 1.75rem",
+                animation: "fadeSlideUp 0.5s 0.1s cubic-bezier(0.23,1,0.32,1) both",
+              }}
             >
-              {description}
+              {active.description}
             </p>
 
-            {/* Tags */}
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
-              {tags.map((tag, i) => (
+            <div
+              key={`tags-${activeIndex}`}
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "0.4rem",
+                marginBottom: "1.75rem",
+                animation: "fadeSlideUp 0.5s 0.15s cubic-bezier(0.23,1,0.32,1) both",
+              }}
+            >
+              {active.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="tag-pill scale-in"
-                  style={{ "--delay": `${380 + i * 70}ms` } as React.CSSProperties}
+                  style={{
+                    fontFamily: "Space Mono, monospace",
+                    fontSize: "0.48rem",
+                    letterSpacing: "0.15em",
+                    textTransform: "uppercase",
+                    color: "rgba(14,12,10,0.5)",
+                    border: "1px solid rgba(14,12,10,0.15)",
+                    borderRadius: "2px",
+                    padding: "0.3rem 0.6rem",
+                  }}
                 >
                   {tag}
                 </span>
               ))}
             </div>
 
-            {/* CTA */}
-            <div
-              className="fade-up"
-              style={{ "--delay": "540ms", marginTop: "0.4rem" } as React.CSSProperties}
+            <CaseStudyButton active={active} />
+
+            {/* Progress dots */}
+            <div style={{ display: "flex", gap: "0.5rem", marginTop: "2rem" }}>
+              {projects.map((p, i) => (
+                <div
+                  key={p.id}
+                  style={{
+                    width: i === activeIndex ? "24px" : "6px",
+                    height: "6px",
+                    borderRadius: "3px",
+                    backgroundColor:
+                      i === activeIndex ? active.accentColor : "rgba(14,12,10,0.15)",
+                    transition: "all 0.4s cubic-bezier(0.23,1,0.32,1)",
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* ── CARD AREA ── */}
+          <div
+            ref={cardAreaRef}
+            style={{
+              flex: 1,
+              position: "relative",
+              overflow: "hidden",
+              zIndex: 1,
+            }}
+          >
+            {/* Card 1 — pinned, centered on full page; left is set by JS */}
+            <Link
+              href={`/project/${projects[0].slug}`}
+              ref={(el: HTMLAnchorElement | null) => { card1Ref.current = el as HTMLElement | null; }}
+              onMouseDown={handleCardMouseDown}
+              onClick={(e) => navigateToProject(projects[0].slug, e)}
+              style={{ display: "block", position: "absolute", top: "3rem", bottom: "3rem", left: 0, width: "clamp(260px, 38vw, 500px)", zIndex: 1, textDecoration: "none", cursor: "pointer", willChange: "transform" }}
             >
-              <button
-                className="btn-outline-glow"
+              <ProjectCard
+                project={projects[0]}
+                isActive={activeIndex === 0}
+              />
+            </Link>
+
+            {/* Cards 2–N — left and translateX both set by JS; start off-screen right */}
+            {projects.slice(1).map((project, j) => (
+              <Link
+                key={project.id}
+                href={`/project/${project.slug}`}
+                ref={(el: HTMLAnchorElement | null) => { cardRefs.current[j] = el as HTMLElement | null; }}
+                onMouseDown={handleCardMouseDown}
+                onClick={(e) => navigateToProject(project.slug, e)}
                 style={{
-                  borderRadius: "2px",
-                  borderColor: `${accentColor}40`,
-                  color: `${accentColor}CC`,
-                }}
-                onMouseEnter={(e) => {
-                  const el = e.currentTarget;
-                  el.style.borderColor = "rgba(0,212,255,0.5)";
-                  el.style.color = "#00D4FF";
-                  el.style.boxShadow = "0 0 24px rgba(0,212,255,0.12)";
-                  el.style.letterSpacing = "0.22em";
-                }}
-                onMouseLeave={(e) => {
-                  const el = e.currentTarget;
-                  el.style.borderColor = `${accentColor}40`;
-                  el.style.color = `${accentColor}CC`;
-                  el.style.boxShadow = "none";
-                  el.style.letterSpacing = "0.15em";
+                  display: "block",
+                  textDecoration: "none",
+                  position: "absolute",
+                  top: "3rem",
+                  bottom: "3rem",
+                  left: 0, // JS overrides this immediately on first scroll tick
+                  width: "clamp(260px, 38vw, 500px)",
+                  zIndex: j + 2, // higher j = higher z-index = on top
+                  willChange: "transform, left",
+                  transition: "transform 0.12s cubic-bezier(0.23, 1, 0.32, 1)",
+                  // Initial translateX keeps card off-screen right; JS overrides on first tick
+                  transform: `translateX(${(j + 1) * 600}px)`,
                 }}
               >
-                View Case Study →
-              </button>
-            </div>
+                <ProjectCard
+                  project={project}
+                  isActive={j + 1 === activeIndex}
+                />
+              </Link>
+            ))}
+          </div>
+
+          {/* Scroll hint */}
+          <div
+            style={{
+              position: "absolute",
+              bottom: "2rem",
+              right: "2rem",
+              display: "flex",
+              alignItems: "center",
+              gap: "0.75rem",
+              opacity: 0.3,
+              zIndex: 25,
+            }}
+          >
+            <span
+              style={{
+                fontFamily: "Space Mono, monospace",
+                fontSize: "0.5rem",
+                letterSpacing: "0.2em",
+                textTransform: "uppercase",
+                color: "#fff",
+              }}
+            >
+              Scroll to explore
+            </span>
+            <div
+              style={{ width: "24px", height: "1px", background: "rgba(255,255,255,0.4)" }}
+            />
           </div>
         </div>
       </div>
+    </div>
+  );
+}
 
-      {/* Bottom separator */}
+function ProjectCard({
+  project,
+  isActive,
+}: {
+  project: Project;
+  isActive: boolean;
+}) {
+  return (
+    <HoverScaleCard style={{ borderRadius: "12px", overflow: "hidden", position: "relative" }}>
+      <img
+        src={project.image}
+        alt={project.title}
+        style={{
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          display: "block",
+        }}
+      />
+
+      {/* Base gradient */}
       <div
         style={{
           position: "absolute",
-          bottom: 0,
-          left: "clamp(1.5rem, 5vw, 5rem)",
-          right: "clamp(1.5rem, 5vw, 5rem)",
-          height: "1px",
-          background: `linear-gradient(90deg, transparent, ${accentColor}22, transparent)`,
+          inset: 0,
+          background:
+            "linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, transparent 40%, transparent 55%, rgba(0,0,0,0.75) 100%)",
         }}
       />
-    </div>
-  );
-}
 
-// Section header
-function WorkHeader() {
-  const ref = useInView(0.1);
-
-  return (
-    <section
-      ref={ref}
-      data-bg-color="#080808"
-      style={{
-        backgroundColor: "transparent",
-        padding: "9rem clamp(1.5rem, 5vw, 5rem) 5rem",
-        maxWidth: "1400px",
-        margin: "0 auto",
-      }}
-    >
+      {/* Scanlines */}
       <div
         style={{
-          borderBottom: "1px solid rgba(255,255,255,0.05)",
-          paddingBottom: "3.5rem",
+          position: "absolute",
+          inset: 0,
+          zIndex: 2,
+          pointerEvents: "none",
+          backgroundImage:
+            "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.18) 2px, rgba(0,0,0,0.18) 4px)",
+          backgroundSize: "100% 4px",
+        }}
+      />
+
+      {/* Red channel shift */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          zIndex: 3,
+          pointerEvents: "none",
+          background: "rgba(255,0,60,0.04)",
+          transform: "translateX(-2px)",
+          mixBlendMode: "screen",
+        }}
+      />
+
+      {/* Cyan channel shift */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          zIndex: 3,
+          pointerEvents: "none",
+          background: "rgba(0,220,255,0.04)",
+          transform: "translateX(2px)",
+          mixBlendMode: "screen",
+        }}
+      />
+
+      {/* Film grain — static base */}
+      <svg
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          zIndex: 4,
+          opacity: 0.15,
+          pointerEvents: "none",
+          mixBlendMode: "overlay",
+        }}
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <filter id={`grain-card-${project.num}`}>
+          <feTurbulence type="fractalNoise" baseFrequency="0.72" numOctaves="4" stitchTiles="stitch" />
+          <feColorMatrix type="saturate" values="0" />
+        </filter>
+        <rect width="100%" height="100%" filter={`url(#grain-card-${project.num})`} />
+      </svg>
+
+      {/* Film grain — animated flicker */}
+      <svg
+        className="grain-flicker"
+        style={{
+          position: "absolute",
+          inset: "-10%",
+          width: "120%",
+          height: "120%",
+          zIndex: 4,
+          opacity: 0.1,
+          pointerEvents: "none",
+          mixBlendMode: "screen",
+        }}
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <filter id={`grain-card2-${project.num}`}>
+          <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="4" stitchTiles="stitch" />
+          <feColorMatrix type="saturate" values="0" />
+        </filter>
+        <rect width="100%" height="100%" filter={`url(#grain-card2-${project.num})`} />
+      </svg>
+
+      <div
+        style={{
+          position: "absolute",
+          top: "1.25rem",
+          left: "1.25rem",
+          right: "1.25rem",
         }}
       >
-        <div className="fade-up" style={{ marginBottom: "1.5rem" }}>
+        <span
+          style={{
+            fontFamily: "Space Mono, monospace",
+            fontSize: "0.5rem",
+            letterSpacing: "0.2em",
+            color: "rgba(255,255,255,0.85)",
+            textTransform: "uppercase",
+          }}
+        >
+          {project.num} — {project.category}
+        </span>
+
+      </div>
+
+      <div
+        style={{
+          position: "absolute",
+          bottom: "1.25rem",
+          left: "1.25rem",
+          right: "1.25rem",
+          display: "flex",
+          gap: "0.4rem",
+          flexWrap: "wrap",
+        }}
+      >
+        {project.tags.map((tag) => (
           <span
+            key={tag}
             style={{
               fontFamily: "Space Mono, monospace",
-              fontSize: "0.58rem",
-              letterSpacing: "0.22em",
+              fontSize: "0.45rem",
+              letterSpacing: "0.15em",
               textTransform: "uppercase",
-              color: "rgba(255,255,255,0.2)",
+              color: "rgba(255,255,255,0.7)",
+              background: "rgba(0,0,0,0.45)",
+              backdropFilter: "blur(8px)",
+              border: "1px solid rgba(255,255,255,0.12)",
+              borderRadius: "2px",
+              padding: "0.3rem 0.55rem",
             }}
           >
-            Selected Work
+            {tag}
           </span>
-        </div>
-
-        <div
-          style={{
-            display: "flex",
-            alignItems: "flex-end",
-            justifyContent: "space-between",
-            gap: "2rem",
-            flexWrap: "wrap",
-          }}
-        >
-          <div>
-            <div className="line-wrap">
-              <h2
-                className="line-inner"
-                style={{
-                  fontFamily: "Syne, sans-serif",
-                  fontWeight: 700,
-                  fontSize: "clamp(2.4rem, 5vw, 4.5rem)",
-                  lineHeight: 1.0,
-                  letterSpacing: "-0.035em",
-                  color: "#FFFFFF",
-                  margin: 0,
-                  "--delay": "60ms",
-                } as React.CSSProperties}
-              >
-                Six years at the frontier.
-              </h2>
-            </div>
-          </div>
-
-          <div
-            className="slide-in-right"
-            style={{ "--delay": "200ms" } as React.CSSProperties}
-          >
-            <p
-              style={{
-                fontFamily: "DM Sans, sans-serif",
-                fontWeight: 300,
-                fontSize: "0.88rem",
-                lineHeight: 1.8,
-                color: "rgba(255,255,255,0.3)",
-                maxWidth: "300px",
-                margin: 0,
-              }}
-            >
-              Designing wearable OS, spatial tools, AI identity, and motion systems for Meta's next-generation hardware.
-            </p>
-          </div>
-        </div>
+        )        )}
       </div>
-    </section>
-  );
-}
-
-// Sticky manifesto section
-function ManifestoSection() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const word1Ref = useRef<HTMLSpanElement>(null);
-  const word2Ref = useRef<HTMLSpanElement>(null);
-  const word3Ref = useRef<HTMLSpanElement>(null);
-  const word4Ref = useRef<HTMLSpanElement>(null);
-  const word5Ref = useRef<HTMLSpanElement>(null);
-
-  useEffect(() => {
-    const section = sectionRef.current;
-    if (!section) return;
-
-    const words = [word1Ref, word2Ref, word3Ref, word4Ref, word5Ref]
-      .map((r) => r.current)
-      .filter(Boolean) as HTMLSpanElement[];
-
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          start: "top bottom",
-          end: "70% center",
-          scrub: 1.5,
-        },
-      });
-      words.forEach((word, i) => {
-        tl.fromTo(
-          word,
-          { y: "100%", opacity: 0 },
-          { y: "0%", opacity: 1, duration: 0.3, ease: "power2.out" },
-          i * 0.15
-        );
-      });
-    });
-
-    return () => ctx.revert();
-  }, []);
-
-  const wordStyle: React.CSSProperties = {
-    display: "inline-block",
-    transform: "translateY(120%)",
-    opacity: 0,
-    willChange: "transform, opacity",
-  };
-
-  const wrapStyle: React.CSSProperties = {
-    display: "inline-flex",
-    overflow: "hidden",
-    verticalAlign: "bottom",
-  };
-
-  return (
-    <div
-      ref={sectionRef}
-      className="sticky-scroll-section"
-      data-bg-color="#0A0812"
-      style={{ backgroundColor: "transparent" }}
-    >
-      <div className="sticky-screen">
-        <div
-          style={{
-            textAlign: "center",
-            padding: "0 4rem",
-            maxWidth: "900px",
-          }}
-        >
-          <p
-            style={{
-              fontFamily: "Syne, sans-serif",
-              fontWeight: 700,
-              fontSize: "clamp(2.2rem, 4.5vw, 4rem)",
-              lineHeight: 1.2,
-              letterSpacing: "-0.025em",
-              color: "#FFFFFF",
-              margin: 0,
-            }}
-          >
-            <span style={wrapStyle}>
-              <span ref={word1Ref} style={wordStyle}>Craft</span>
-            </span>{" "}
-            <span style={wrapStyle}>
-              <span ref={word2Ref} style={wordStyle}>that</span>
-            </span>{" "}
-            <span style={wrapStyle}>
-              <span
-                ref={word3Ref}
-                style={{
-                  ...wordStyle,
-                  background: "linear-gradient(135deg, #9B7EC8, #00D4FF)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  backgroundClip: "text",
-                }}
-              >
-                ships.
-              </span>
-            </span>{" "}
-            <span style={wrapStyle}>
-              <span ref={word4Ref} style={wordStyle}>Systems</span>
-            </span>{" "}
-            <span style={wrapStyle}>
-              <span ref={word5Ref} style={wordStyle}>that scale.</span>
-            </span>
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-export default function WorkSection() {
-  return (
-    <div id="work">
-      <WorkHeader />
-      <ManifestoSection />
-      {projects.map((project, i) => (
-        <ProjectSection key={project.id} {...project} index={i} />
-      ))}
-    </div>
+    </HoverScaleCard>
   );
 }

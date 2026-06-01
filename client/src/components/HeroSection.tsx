@@ -1,66 +1,94 @@
 /*
- * DESIGN: "Signal in the Dark" — Hero Section
+ * DESIGN: "Warm Editorial" — Hero Section
  *
- * Foudre-exact animation system:
- * - Name lines: line-wrap/line-inner masked reveal (translateY(105%) → 0)
- * - Subtitle, tags: fade-up with staggered --delay
- * - GSAP scroll-driven: hero content fades + moves up as user scrolls (scrubbed)
- * - Background: animated gradient orbs (CSS keyframes)
- * - Vertical year label, availability dot, scroll indicator line
+ * On first load (after PasswordGate): title starts at scale(0.88) opacity(0)
+ * and animates to scale(1) opacity(1) when the unlock event fires — creating
+ * a seamless continuation of the gate zoom-in motion.
+ *
+ * On direct load (already authenticated): title appears normally with a
+ * gentle fade-in.
  */
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { scrollTo } from "@/hooks/useSmoothScroll";
+import { scrollTo, addLenisScrollListener, removeLenisScrollListener} from "@/hooks/useSmoothScroll";
+import { useUnlock } from "@/contexts/UnlockContext";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663492833389/E4X24s2bgzcXDLXF5dJoLn/hero-gradient-UYRsk3ubiGbvzbqJCwgDw7.webp";
+const WDS_IMG = "/manus-storage/wds-docs_dbcd9481.png";
+const AR_IMG = "/manus-storage/ar-tool-ui_1226bd7c.png";
+const RAYBAN_IMG = "/manus-storage/rayban-meta-hero_1a588487.png";
 
 export default function HeroSection() {
-  const contentRef = useRef<HTMLDivElement>(null);
-  const bgImgRef = useRef<HTMLImageElement>(null);
+  const { onUnlock } = useUnlock();
   const heroRef = useRef<HTMLElement>(null);
+  const titleRef = useRef<HTMLDivElement>(null);
+  const jamesRef = useRef<HTMLDivElement>(null);
+  const smithRef = useRef<HTMLDivElement>(null);
+  const glitchRafRef = useRef<number>(0);
+  const lastScrollY = useRef<number>(0);
+  const [loaded, setLoaded] = useState(false);
+  const [titleReady, setTitleReady] = useState(false);
 
-  // Trigger .is-inview on mount (after a short delay for page load)
+  // Check if already authenticated (skip gate animation)
+  const alreadyAuthed = (() => { try { return sessionStorage.getItem("js_portfolio_auth") === "1"; } catch { return false; } })();
+
+  // Gate ALL hero content behind unlock event (or show immediately if already authed)
   useEffect(() => {
-    const hero = heroRef.current;
-    if (!hero) return;
-    const t = setTimeout(() => {
-      hero.classList.add("is-inview");
-    }, 100);
-    return () => clearTimeout(t);
-  }, []);
-
-  // GSAP scroll-driven: hero content fades out and moves up as user scrolls
-  useEffect(() => {
-    const content = contentRef.current;
-    const bgImg = bgImgRef.current;
-    if (!content) return;
-
-    const ctx = gsap.context(() => {
-      gsap.to(content, {
-        y: "-16%",
-        opacity: 0,
-        ease: "none",
-        scrollTrigger: {
-          trigger: "#hero",
-          start: "top top",
-          end: "75% top",
-          scrub: 1.2,
-        },
+    if (alreadyAuthed) {
+      // Already authenticated — gentle fade in
+      const t = setTimeout(() => { setTitleReady(true); setLoaded(true); }, 80);
+      return () => clearTimeout(t);
+    } else {
+      // Wait for PasswordGate to fire unlock — everything animates in together
+      const unsub = onUnlock(() => {
+        setTitleReady(true);
+        setLoaded(true);
       });
+      return unsub;
+    }
+  }, [onUnlock, alreadyAuthed]);
 
-      if (bgImg) {
-        gsap.to(bgImg, {
-          y: "22%",
+  // GSAP scroll: title scales up + cards spread as user scrolls
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      if (titleRef.current) {
+        gsap.to(titleRef.current, {
+          scale: 1.06,
+          y: "-6%",
           ease: "none",
           scrollTrigger: {
             trigger: "#hero",
             start: "top top",
-            end: "bottom top",
-            scrub: 1,
+            end: "80% top",
+            scrub: 1.5,
+          },
+        });
+      }
+
+      if (jamesRef.current) {
+        gsap.to(jamesRef.current, {
+          x: "-18vw",
+          ease: "none",
+          scrollTrigger: {
+            trigger: "#hero",
+            start: "top top",
+            end: "100% top",
+            scrub: 1.8,
+          },
+        });
+      }
+      if (smithRef.current) {
+        gsap.to(smithRef.current, {
+          x: "18vw",
+          ease: "none",
+          scrollTrigger: {
+            trigger: "#hero",
+            start: "top top",
+            end: "100% top",
+            scrub: 1.8,
           },
         });
       }
@@ -69,259 +97,241 @@ export default function HeroSection() {
     return () => ctx.revert();
   }, []);
 
+  // Chromatic aberration glitch — intensity driven by scroll velocity
+  useEffect(() => {
+    let heroVisible = true;
+
+    const onScroll = () => {
+      if (!heroVisible) return;
+      cancelAnimationFrame(glitchRafRef.current);
+      glitchRafRef.current = requestAnimationFrame(() => {
+        const hero = heroRef.current;
+        if (!hero || !heroVisible) return;
+        const rect = hero.getBoundingClientRect();
+
+        const velocity = Math.abs(window.scrollY - lastScrollY.current);
+        lastScrollY.current = window.scrollY;
+
+        const progress = Math.max(0, Math.min(1, -rect.top / rect.height));
+        const intensity = Math.min(24, velocity * 0.6 + progress * 14);
+
+        const shadow = intensity > 0.5
+          ? `${-intensity * 0.6}px 0 rgba(255,0,60,0.7), ${intensity * 0.6}px 0 rgba(0,180,255,0.7)`
+          : 'none';
+
+        if (jamesRef.current) jamesRef.current.style.textShadow = shadow;
+        if (smithRef.current) smithRef.current.style.textShadow = shadow;
+      });
+    };
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        heroVisible = entry.isIntersecting;
+        if (!heroVisible) {
+          cancelAnimationFrame(glitchRafRef.current);
+          if (jamesRef.current) jamesRef.current.style.textShadow = 'none';
+          if (smithRef.current) smithRef.current.style.textShadow = 'none';
+        }
+      },
+      { threshold: 0 }
+    );
+    if (heroRef.current) io.observe(heroRef.current);
+
+    addLenisScrollListener(({ scroll, velocity }) => {
+      lastScrollY.current = scroll;
+      onScroll();
+    });
+    return () => {
+      removeLenisScrollListener(onScroll);
+      cancelAnimationFrame(glitchRafRef.current);
+      io.disconnect();
+    };
+  }, []);
+
   return (
     <section
       ref={heroRef}
       id="hero"
-      data-bg-color="#080808"
-      className="relative min-h-screen flex flex-col overflow-hidden"
-      style={{ backgroundColor: "transparent" }}
+      data-bg-color="#F2EDE8"
+      style={{
+        position: "relative",
+        height: "100svh",
+        backgroundColor: "#F2EDE8",
+        overflow: "hidden",
+        display: "flex",
+        flexDirection: "column",
+      }}
     >
-      {/* Background image with overlay */}
-      <div className="absolute inset-0 z-0" style={{ overflow: "hidden" }}>
-        <img
-          ref={bgImgRef}
-          src={HERO_BG}
-          alt=""
+      {/* Subtle paper grain texture */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          backgroundImage:
+            "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E\")",
+          pointerEvents: "none",
+          zIndex: 0,
+        }}
+      />
+
+      {/* ── MASSIVE BACKGROUND TITLE ── */}
+      {/* Starts at scale(0.88) opacity(0), animates to scale(1) opacity(1) on unlock */}
+      <div
+        ref={titleRef}
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "flex-start",
+          paddingTop: "clamp(-1rem, -1vh, 0rem)",
+          marginTop: "-2vh",
+          zIndex: 1,
+          pointerEvents: "none",
+          willChange: "transform, opacity",
+          transformOrigin: "top center",
+          // Scale-in from slightly small — continues the gate zoom motion
+          opacity: titleReady ? 1 : 0,
+          transform: titleReady ? "scale(1)" : "scale(0.88)",
+          transition: titleReady
+            ? "opacity 900ms cubic-bezier(0.23, 1, 0.32, 1), transform 900ms cubic-bezier(0.23, 1, 0.32, 1)"
+            : "none",
+        }}
+      >
+        <div
+          ref={jamesRef}
           style={{
-            width: "100%",
-            height: "130%",
-            objectFit: "cover",
-            objectPosition: "center",
-            opacity: 0.4,
-            display: "block",
+            fontFamily: "Syne, sans-serif",
+            fontWeight: 800,
+            fontSize: "clamp(6rem, 18vw, 22rem)",
+            lineHeight: 0.85,
+            letterSpacing: "-0.04em",
+            color: "#0E0C0A",
+            textAlign: "center",
+            whiteSpace: "nowrap",
+            userSelect: "none",
             willChange: "transform",
           }}
-        />
+        >
+          JAMES
+        </div>
         <div
-          className="absolute inset-0"
+          ref={smithRef}
           style={{
-            background: "linear-gradient(180deg, rgba(8,8,8,0.05) 0%, rgba(8,8,8,0.3) 50%, rgba(8,8,8,1) 100%)",
+            fontFamily: "Syne, sans-serif",
+            fontWeight: 800,
+            fontSize: "clamp(6rem, 18vw, 22rem)",
+            lineHeight: 0.85,
+            letterSpacing: "-0.04em",
+            color: "#0E0C0A",
+            textAlign: "center",
+            whiteSpace: "nowrap",
+            userSelect: "none",
+            willChange: "transform",
           }}
-        />
-        {/* Violet orb */}
-        <div
-          className="absolute"
-          style={{
-            top: "5%",
-            left: "-5%",
-            width: "55vw",
-            height: "55vw",
-            background: "radial-gradient(circle, rgba(123,94,167,0.14) 0%, transparent 65%)",
-            animation: "orbFloat 10s ease-in-out infinite",
-            pointerEvents: "none",
-          }}
-        />
-        {/* Cyan orb */}
-        <div
-          className="absolute"
-          style={{
-            bottom: "10%",
-            right: "-5%",
-            width: "40vw",
-            height: "40vw",
-            background: "radial-gradient(circle, rgba(0,212,255,0.08) 0%, transparent 65%)",
-            animation: "orbFloat 14s ease-in-out infinite reverse",
-            pointerEvents: "none",
-          }}
-        />
+        >
+          SMITH
+        </div>
       </div>
 
-      {/* Year label — right side vertical */}
+      {/* ── BOTTOM CONTENT ── */}
       <div
-        className="absolute top-1/2 right-6 md:right-10 z-10 hidden md:block fade-up"
         style={{
-          transform: "translateY(-50%) rotate(90deg)",
-          transformOrigin: "center",
-          "--delay": "1800ms",
-        } as React.CSSProperties}
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          zIndex: 4,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "flex-end",
+          padding: "0 clamp(1.5rem, 4vw, 4rem) clamp(2rem, 4vh, 3.5rem)",
+          gap: "2rem",
+        }}
       >
+        <div
+          style={{
+            opacity: loaded ? 1 : 0,
+            transform: loaded ? "translateY(0)" : "translateY(20px)",
+            transition: "opacity 1s ease 0.6s, transform 1s cubic-bezier(0.23,1,0.32,1) 0.6s",
+          }}
+        >
+          <p
+            style={{
+              fontFamily: "Space Mono, monospace",
+              fontSize: "0.58rem",
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              color: "rgba(14,12,10,0.35)",
+              margin: "0 0 0.6rem",
+            }}
+          >
+            Design Systems - Wearables - AI Focused - AR/VR
+          </p>
+          <p
+            style={{
+              fontFamily: "Syne, sans-serif",
+              fontWeight: 800,
+              fontSize: "clamp(1.8rem, 3.5vw, 3.2rem)",
+              lineHeight: 0.95,
+              letterSpacing: "-0.03em",
+              color: "#0E0C0A",
+              margin: 0,
+            }}
+          >
+            Product Design Leader
+          </p>
+        </div>
+      </div>
+
+      {/* Availability dot — right edge, vertical */}
+      <div
+        style={{
+          position: "absolute",
+          top: "50%",
+          right: "clamp(1rem, 2vw, 2rem)",
+          transform: "translateY(-50%)",
+          zIndex: 5,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "0.5rem",
+          opacity: loaded ? 0.6 : 0,
+          transition: "opacity 1s ease 1s",
+        }}
+      >
+        <div
+          style={{
+            width: "6px",
+            height: "6px",
+            borderRadius: "50%",
+            backgroundColor: "#1A3A2A",
+            animation: "dotPulse 2.5s ease-in-out infinite",
+          }}
+        />
         <span
           style={{
             fontFamily: "Space Mono, monospace",
-            fontSize: "0.55rem",
-            letterSpacing: "0.25em",
+            fontSize: "0.5rem",
+            letterSpacing: "0.18em",
             textTransform: "uppercase",
-            color: "rgba(255,255,255,0.1)",
+            color: "#1A3A2A",
+            writingMode: "vertical-rl",
+            transform: "rotate(180deg)",
             whiteSpace: "nowrap",
           }}
         >
-          Product Design — Meta — 2026
+          Available
         </span>
       </div>
 
-      {/* Main content */}
-      <div
-        ref={contentRef}
-        className="relative z-10 flex flex-col justify-end flex-1"
-        style={{ padding: "8rem 4rem 5rem" }}
-      >
-        {/* Label — fade-up */}
-        <div
-          className="fade-up"
-          style={{ marginBottom: "2rem", "--delay": "200ms" } as React.CSSProperties}
-        >
-          <span
-            className="tag-pill"
-            style={{ fontFamily: "Space Mono, monospace" }}
-          >
-            Product Designer · Meta
-          </span>
-        </div>
-
-        {/* "James" — line-wrap masked reveal */}
-        <div className="line-wrap" style={{ lineHeight: 0.9, marginBottom: "0.05em" }}>
-          <h1
-            className="line-inner"
-            style={{
-              fontFamily: "Syne, sans-serif",
-              fontWeight: 800,
-              fontSize: "clamp(4rem, 13vw, 12rem)",
-              lineHeight: 0.9,
-              letterSpacing: "-0.03em",
-              color: "#FFFFFF",
-              margin: 0,
-              "--delay": "300ms",
-            } as React.CSSProperties}
-          >
-            James
-          </h1>
-        </div>
-
-        {/* "Smith." — line-wrap masked reveal with gradient */}
-        <div className="line-wrap" style={{ lineHeight: 0.9, marginBottom: "3rem" }}>
-          <h1
-            className="line-inner"
-            style={{
-              fontFamily: "Syne, sans-serif",
-              fontWeight: 800,
-              fontSize: "clamp(4rem, 13vw, 12rem)",
-              lineHeight: 0.9,
-              letterSpacing: "-0.03em",
-              background: "linear-gradient(135deg, #9B7EC8 0%, #00D4FF 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
-              margin: 0,
-              "--delay": "440ms",
-            } as React.CSSProperties}
-          >
-            Smith.
-          </h1>
-        </div>
-
-        {/* Bottom row */}
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-          <div
-            className="fade-up"
-            style={{ "--delay": "700ms" } as React.CSSProperties}
-          >
-            <p
-              style={{
-                fontFamily: "DM Sans, sans-serif",
-                fontWeight: 300,
-                fontSize: "clamp(0.95rem, 1.4vw, 1.15rem)",
-                color: "rgba(255,255,255,0.4)",
-                maxWidth: "400px",
-                lineHeight: 1.65,
-                margin: 0,
-              }}
-            >
-              Designing the next era of wearable computing,<br />
-              AI identity, and spatial experiences at Meta.
-            </p>
-          </div>
-
-          <div
-            className="fade-up flex flex-col items-start md:items-end gap-3"
-            style={{ "--delay": "850ms" } as React.CSSProperties}
-          >
-            <div className="flex items-center gap-2">
-              <div
-                style={{
-                  width: "6px",
-                  height: "6px",
-                  borderRadius: "50%",
-                  backgroundColor: "#2A9D5C",
-                  animation: "dotPulse 2.5s ease-in-out infinite",
-                  flexShrink: 0,
-                }}
-              />
-              <span
-                style={{
-                  fontFamily: "Space Mono, monospace",
-                  fontSize: "0.62rem",
-                  letterSpacing: "0.12em",
-                  textTransform: "uppercase",
-                  color: "rgba(255,255,255,0.3)",
-                }}
-              >
-                Available for select projects
-              </span>
-            </div>
-            <button
-              onClick={() => scrollTo("#work")}
-              style={{
-                fontFamily: "Space Mono, monospace",
-                fontSize: "0.62rem",
-                letterSpacing: "0.15em",
-                textTransform: "uppercase",
-                color: "rgba(255,255,255,0.22)",
-                background: "none",
-                border: "none",
-                display: "flex",
-                alignItems: "center",
-                gap: "0.5rem",
-                transition: "color 0.3s ease, letter-spacing 0.3s ease",
-                padding: 0,
-              }}
-              onMouseEnter={(e) => {
-                const el = e.currentTarget;
-                el.style.color = "rgba(255,255,255,0.7)";
-                el.style.letterSpacing = "0.22em";
-              }}
-              onMouseLeave={(e) => {
-                const el = e.currentTarget;
-                el.style.color = "rgba(255,255,255,0.22)";
-                el.style.letterSpacing = "0.15em";
-              }}
-            >
-              View work ↓
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Scroll indicator line */}
-      <div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 fade-up"
-        style={{ "--delay": "1400ms" } as React.CSSProperties}
-      >
-        <div
-          style={{
-            width: "1px",
-            height: "70px",
-            background: "linear-gradient(180deg, rgba(0,212,255,0.6) 0%, transparent 100%)",
-            animation: "scrollLine 2.5s ease-in-out infinite",
-          }}
-        />
-      </div>
-
       <style>{`
-        @keyframes orbFloat {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          33% { transform: translate(2%, 3%) scale(1.04); }
-          66% { transform: translate(-1%, -2%) scale(0.97); }
-        }
         @keyframes dotPulse {
-          0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(42,157,92,0.4); }
-          50% { opacity: 0.6; box-shadow: 0 0 0 6px rgba(42,157,92,0); }
-        }
-        @keyframes scrollLine {
-          0% { transform: scaleY(0); transform-origin: top; opacity: 0; }
-          30% { transform: scaleY(1); transform-origin: top; opacity: 1; }
-          70% { transform: scaleY(1); transform-origin: bottom; opacity: 1; }
-          100% { transform: scaleY(0); transform-origin: bottom; opacity: 0; }
+          0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(26,58,42,0.4); }
+          50% { opacity: 0.6; box-shadow: 0 0 0 4px rgba(26,58,42,0); }
         }
       `}</style>
     </section>

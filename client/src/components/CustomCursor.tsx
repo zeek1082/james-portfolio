@@ -1,10 +1,12 @@
 /*
  * DESIGN: "Signal in the Dark" — Custom Cursor
- * Small dot + larger lagging ring. Transforms on hover over interactive elements.
+ * Small dot + larger lagging ring.
  *
- * Performance: all state is kept in refs and written directly to DOM.
- * No React re-renders triggered by mouse movement or hover changes.
- * Single rAF loop that never restarts.
+ * PERFORMANCE: Zero setState in the hot path.
+ * - All cursor state (position, hover, visibility) is tracked via refs
+ * - DOM mutations happen directly in the rAF loop — no React re-renders
+ * - Ring size change uses transform:scale instead of width/height (GPU only)
+ * - useEffect deps array is empty — single stable loop, no re-registration
  */
 
 import { useEffect, useRef } from "react";
@@ -20,69 +22,78 @@ export default function CustomCursor() {
   const rafRef = useRef<number>(0);
 
   useEffect(() => {
-    // Only show on desktop
+    // Only show on desktop (pointer: fine)
     if (window.matchMedia("(pointer: coarse)").matches) return;
 
     const dot = dotRef.current;
     const ring = ringRef.current;
     if (!dot || !ring) return;
 
-    const setVisible = (v: boolean) => {
-      if (isVisible.current === v) return;
-      isVisible.current = v;
-      dot.style.opacity = v ? "1" : "0";
-      ring.style.opacity = v ? "1" : "0";
-    };
-
-    const setHovering = (h: boolean) => {
-      if (isHovering.current === h) return;
-      isHovering.current = h;
-      if (h) {
-        dot.style.background = "linear-gradient(135deg, #7B5EA7, #00D4FF)";
-        ring.style.width = "50px";
-        ring.style.height = "50px";
-        ring.style.borderColor = "rgba(0,212,255,0.5)";
-      } else {
-        dot.style.background = "rgba(255,255,255,0.9)";
-        ring.style.width = "40px";
-        ring.style.height = "40px";
-        ring.style.borderColor = "rgba(255,255,255,0.2)";
-      }
-    };
+    // Initial state — hidden until first mousemove
+    dot.style.opacity = "0";
+    ring.style.opacity = "0";
 
     const handleMouseMove = (e: MouseEvent) => {
       pos.current = { x: e.clientX, y: e.clientY };
-      setVisible(true);
+      if (!isVisible.current) {
+        isVisible.current = true;
+        dot.style.opacity = "1";
+        ring.style.opacity = "1";
+      }
     };
 
-    const handleMouseLeave = () => setVisible(false);
-    const handleMouseEnter = () => setVisible(true);
+    const handleMouseLeave = () => {
+      isVisible.current = false;
+      dot.style.opacity = "0";
+      ring.style.opacity = "0";
+    };
+
+    const handleMouseEnter = () => {
+      isVisible.current = true;
+      dot.style.opacity = "1";
+      ring.style.opacity = "1";
+    };
 
     const handleHoverIn = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      setHovering(
-        target.tagName === "A" || target.tagName === "BUTTON" ||
-        !!target.closest("a") || !!target.closest("button")
-      );
+      if (
+        target.tagName === "A" ||
+        target.tagName === "BUTTON" ||
+        target.closest("a") ||
+        target.closest("button")
+      ) {
+        if (!isHovering.current) {
+          isHovering.current = true;
+          // Swap dot color via CSS class — no layout change
+          dot.classList.add("cursor-hover");
+          ring.classList.add("cursor-hover");
+        }
+      }
     };
 
-    const handleHoverOut = () => setHovering(false);
+    const handleHoverOut = () => {
+      if (isHovering.current) {
+        isHovering.current = false;
+        dot.classList.remove("cursor-hover");
+        ring.classList.remove("cursor-hover");
+      }
+    };
 
-    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mousemove", handleMouseMove, { passive: true });
     document.addEventListener("mouseleave", handleMouseLeave);
     document.addEventListener("mouseenter", handleMouseEnter);
-    document.addEventListener("mouseover", handleHoverIn);
-    document.addEventListener("mouseout", handleHoverOut);
+    document.addEventListener("mouseover", handleHoverIn, { passive: true });
+    document.addEventListener("mouseout", handleHoverOut, { passive: true });
 
-    // Single rAF loop — runs once, never restarts
+    // Single stable rAF loop — only transform/opacity, GPU only
     const animate = () => {
-      // Dot follows immediately
+      // Dot: instant follow
       dot.style.transform = `translate(${pos.current.x - 4}px, ${pos.current.y - 4}px)`;
 
-      // Ring lags behind
+      // Ring: lerp lag
       ringPos.current.x += (pos.current.x - ringPos.current.x) * 0.12;
       ringPos.current.y += (pos.current.y - ringPos.current.y) * 0.12;
-      ring.style.transform = `translate(${ringPos.current.x - 20}px, ${ringPos.current.y - 20}px)`;
+      ring.style.transform = `translate(${ringPos.current.x - 20}px, ${ringPos.current.y - 20}px) scale(${isHovering.current ? 1.25 : 1})`;
 
       rafRef.current = requestAnimationFrame(animate);
     };
@@ -97,13 +108,14 @@ export default function CustomCursor() {
       document.removeEventListener("mouseout", handleHoverOut);
       cancelAnimationFrame(rafRef.current);
     };
-  }, []); // empty deps — runs once, never restarts
+  }, []); // stable — never re-registers
 
   return (
     <>
       {/* Dot */}
       <div
         ref={dotRef}
+        className="cursor-dot"
         style={{
           position: "fixed",
           top: 0,
@@ -111,18 +123,17 @@ export default function CustomCursor() {
           width: "8px",
           height: "8px",
           borderRadius: "50%",
-          background: "rgba(255,255,255,0.9)",
+          background: "rgba(14,12,10,0.85)",
           pointerEvents: "none",
           zIndex: 9999,
-          opacity: 0,
-          transition: "opacity 0.3s ease, background 0.3s ease, width 0.3s ease, height 0.3s ease",
           willChange: "transform",
-          mixBlendMode: "difference",
+          transition: "opacity 0.3s ease, background 0.25s ease",
         }}
       />
       {/* Ring */}
       <div
         ref={ringRef}
+        className="cursor-ring"
         style={{
           position: "fixed",
           top: 0,
@@ -130,14 +141,21 @@ export default function CustomCursor() {
           width: "40px",
           height: "40px",
           borderRadius: "50%",
-          border: "1px solid rgba(255,255,255,0.2)",
+          border: "1px solid rgba(14,12,10,0.2)",
           pointerEvents: "none",
           zIndex: 9998,
-          opacity: 0,
-          transition: "opacity 0.3s ease, border-color 0.3s ease, width 0.3s ease, height 0.3s ease",
           willChange: "transform",
+          transition: "opacity 0.3s ease, border-color 0.25s ease, transform 0.15s ease",
         }}
       />
+      <style>{`
+        .cursor-dot.cursor-hover {
+          background: linear-gradient(135deg, #1A3A2A, #B5CC18) !important;
+        }
+        .cursor-ring.cursor-hover {
+          border-color: rgba(196,98,42,0.5) !important;
+        }
+      `}</style>
     </>
   );
 }

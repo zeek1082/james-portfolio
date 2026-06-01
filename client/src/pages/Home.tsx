@@ -9,6 +9,7 @@ import { useSmoothScroll } from "@/hooks/useSmoothScroll";
 import Navigation from "@/components/Navigation";
 import HeroSection from "@/components/HeroSection";
 import WorkSection from "@/components/WorkSection";
+import VideoBreakSection from "@/components/VideoBreakSection";
 import AboutSection from "@/components/AboutSection";
 import ContactSection from "@/components/ContactSection";
 import CustomCursor from "@/components/CustomCursor";
@@ -37,7 +38,7 @@ export default function Home() {
         // No background here — FixedBackground handles it
         backgroundColor: "transparent",
         minHeight: "100vh",
-        color: "#F0F0F0",
+        color: "#0E0C0A",
         cursor: "none",
         position: "relative",
       }}
@@ -49,6 +50,7 @@ export default function Home() {
       <ScrollProgress />
       <Navigation />
       <HeroSection />
+      <VideoBreakSection />
       <WorkSection />
       <AboutSection />
       <ContactSection />
