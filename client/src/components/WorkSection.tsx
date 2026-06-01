@@ -296,10 +296,7 @@ export default function WorkSection() {
         const maxShift = window.innerWidth * 0.1;
         h.style.transform = `translateX(${progress * maxShift}px)`;
 
-        // Chromatic aberration: CSS class toggle (GPU) instead of per-frame textShadow
-        h.classList.add('is-glitching');
-        clearTimeout((h as any)._glitchTimer);
-        (h as any)._glitchTimer = setTimeout(() => h.classList.remove('is-glitching'), 300);
+
       });
     };
     window.addEventListener("scroll", onHeaderScroll, { passive: true });

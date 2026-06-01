@@ -97,40 +97,22 @@ export default function HeroSection() {
     return () => ctx.revert();
   }, []);
 
-  // Chromatic aberration glitch — CSS class toggle instead of per-frame textShadow
-  // CSS animation runs on GPU; JS only toggles a class when scroll starts/stops
+  // Chromatic aberration removed for performance
   useEffect(() => {
     let heroVisible = true;
-    let clearTimer: ReturnType<typeof setTimeout>;
-
-    const onScroll = () => {
-      if (!heroVisible) return;
-      if (jamesRef.current) jamesRef.current.classList.add('is-glitching');
-      if (smithRef.current) smithRef.current.classList.add('is-glitching');
-      clearTimeout(clearTimer);
-      clearTimer = setTimeout(() => {
-        if (jamesRef.current) jamesRef.current.classList.remove('is-glitching');
-        if (smithRef.current) smithRef.current.classList.remove('is-glitching');
-      }, 300);
-    };
 
     const io = new IntersectionObserver(
       ([entry]) => {
         heroVisible = entry.isIntersecting;
         if (!heroVisible) {
           cancelAnimationFrame(glitchRafRef.current);
-          if (jamesRef.current) jamesRef.current.classList.remove('is-glitching');
-          if (smithRef.current) smithRef.current.classList.remove('is-glitching');
         }
       },
       { threshold: 0 }
     );
     if (heroRef.current) io.observe(heroRef.current);
 
-    addLenisScrollListener(onScroll);
     return () => {
-      removeLenisScrollListener(onScroll);
-      clearTimeout(clearTimer);
       cancelAnimationFrame(glitchRafRef.current);
       io.disconnect();
     };
