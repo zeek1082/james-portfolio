@@ -17,9 +17,9 @@ import { useUnlock } from "@/contexts/UnlockContext";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const WDS_IMG = "/manus-storage/wds-docs_dbcd9481.png";
-const AR_IMG = "/manus-storage/ar-tool-ui_1226bd7c.png";
-const RAYBAN_IMG = "/manus-storage/rayban-meta-hero_1a588487.png";
+const WDS_IMG = "/manus-storage/wds-docs_dbcd9481.webp";
+const AR_IMG = "/manus-storage/ar-tool-ui_1226bd7c.webp";
+const RAYBAN_IMG = "/manus-storage/rayban-meta-hero_1a588487.webp";
 
 export default function HeroSection() {
   const { onUnlock } = useUnlock();

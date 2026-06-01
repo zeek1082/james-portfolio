@@ -50,27 +50,27 @@ const data: CaseStudyData = {
         "Every component in the AI Assistant Device system was designed to work both in the default AI experience and in user-created Spaces — with a theming API that let users customise without breaking the system.",
       carouselCards: [
         {
-          src: "/manus-storage/Frame2147258658(15)_c361178d.png",
+          src: "/manus-storage/Frame2147258658(15)_c361178d.webp",
           alt: "AI Assistant Device — three colourful devices floating",
           label: "Device Variants",
         },
         {
-          src: "/manus-storage/Frame2147258658(18)_f30d9f40.png",
+          src: "/manus-storage/Frame2147258658(18)_f30d9f40.webp",
           alt: "AI Assistant Device — music player UI",
           label: "Music Space",
         },
         {
-          src: "/manus-storage/Frame2147258658(17)_a97910bb.png",
+          src: "/manus-storage/Frame2147258658(17)_a97910bb.webp",
           alt: "AI Assistant Device — agent character with Half Marathon notification",
           label: "Agent Character",
         },
         {
-          src: "/manus-storage/Frame2147258658(16)_ca983640.png",
+          src: "/manus-storage/Frame2147258658(16)_ca983640.webp",
           alt: "AI Assistant Device — Dodgers win notification",
           label: "Live Notifications",
         },
         {
-          src: "/manus-storage/Frame2147258658(14)_2b7c4fa9.png",
+          src: "/manus-storage/Frame2147258658(14)_2b7c4fa9.webp",
           alt: "AI Assistant Device — blue device in marble dish with pearls",
           label: "Lifestyle",
         },
@@ -83,7 +83,7 @@ const data: CaseStudyData = {
     },
     {
       type: "image-full-right",
-      image: "/manus-storage/___________cc0d6c36.png",
+      image: "/manus-storage/___________cc0d6c36.webp",
       imageAlt: "AI Assistant Device — Spaces UI showing weather, health, fitness, calendar, stocks, and running event",
       sectionBg: "#000000",
     },
@@ -93,7 +93,7 @@ const data: CaseStudyData = {
         "A device that adapts to you — not the other way around.",
       closingBody:
         "The AI Assistant Device represents a fundamental rethinking of what a wearable OS can be. By replacing the traditional app model with AI-generated Spaces and user-controlled theming, we created a device that feels genuinely personal from day one.",
-      closingMedia: "/manus-storage/260520_coop_lookdev_hw_199_CC1_f435d000.png",
+      closingMedia: "/manus-storage/260520_coop_lookdev_hw_199_CC1_f435d000.webp",
       nextProject: {
         title: "Design Systems Tooling",
         slug: "ds-tooling",

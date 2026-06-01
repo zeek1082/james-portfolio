@@ -43,7 +43,7 @@ const projects: Project[] = [
     description:
       "A design system built for a light passthrough display — mitigating optical artifacts while maintaining visual clarity.",
     tags: ["DESIGN SYSTEMS", "WEARABLE OS"],
-    image: "/manus-storage/rayban-meta-hero_1a588487.png",
+    image: "/manus-storage/rayban-meta-hero_1a588487.webp",
     bgColor: "#F2EDE8",
     accentColor: "#1A3A2A",
     slug: "rayban-display-ds",
@@ -56,7 +56,7 @@ const projects: Project[] = [
     description:
       "A unified color token system spanning smartwatches, phones, and AR display glasses — with third-party theming for Spotify, Apple Music, and more.",
     tags: ["COLOR SYSTEMS", "CROSS-DEVICE"],
-    image: "/manus-storage/wearables-color-system-card_09dd2118.png",
+    image: "/manus-storage/wearables-color-system-card_09dd2118.webp",
     bgColor: "#F5F1EC",
     accentColor: "#1A3A2A",
     slug: "wearables-color-system",
@@ -69,7 +69,7 @@ const projects: Project[] = [
     description:
       "The first consumer EMG text input — write messages by moving your fingers through the air. Shipped spring 2026.",
     tags: ["NEURAL INPUT", "EMG"],
-    image: "/manus-storage/neural-input-card_b0c02bd8.png",
+    image: "/manus-storage/neural-input-card_b0c02bd8.webp",
     bgColor: "#F2EDE8",
     accentColor: "#1A3A2A",
     slug: "emg-handwriting",
@@ -82,7 +82,7 @@ const projects: Project[] = [
     description:
       "A watch with no OS — just an AI that learns what you need. Two design systems: a system language and a user theming framework.",
     tags: ["AI SYSTEMS", "VIBE CODING"],
-    image: "/manus-storage/ai-smartwatch-card_6e67093b.png",
+    image: "/manus-storage/ai-smartwatch-card_6e67093b.webp",
     bgColor: "#F5F1EC",
     accentColor: "#1A3A2A",
     slug: "ai-smartwatch",
@@ -95,7 +95,7 @@ const projects: Project[] = [
     description:
       "AI-powered design tooling — from system linters to a full vibe-coding IDE built on web components.",
     tags: ["AI TOOLING", "FIGMA PLUGINS"],
-    image: "/manus-storage/ds-tooling-card_440191c4.png",
+    image: "/manus-storage/ds-tooling-card_440191c4.webp",
     bgColor: "#F2EDE8",
     accentColor: "#1A3A2A",
     slug: "ds-tooling",

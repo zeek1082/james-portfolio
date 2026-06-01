@@ -32,8 +32,8 @@ const data: CaseStudyData = {
     },
     {
       type: "gif-pair",
-      gifLeft: "/manus-storage/color-system-anim-1_858a034a.png",
-      gifRight: "/manus-storage/color-system-anim-2_33fdf20a.png",
+      gifLeft: "/manus-storage/color-system-anim-1_858a034a.webp",
+      gifRight: "/manus-storage/color-system-anim-2_33fdf20a.webp",
       gifLeftAlt: "Wearables Color System — Spotify Escape Hatch theme",
       gifRightAlt: "Wearables Color System — Spotify Palco theme",
     },
@@ -46,17 +46,17 @@ const data: CaseStudyData = {
       type: "scroll-gallery",
       galleryHeadline: "Color Explorations — Every product Covered",
       galleryImages: [
-        { src: "/manus-storage/94841901_89c4741e.png", alt: "Wearables Color System — token overview" },
-        { src: "/manus-storage/94841904_0b037e61.png", alt: "Wearables Color System — primitive tokens" },
-        { src: "/manus-storage/94841905_125081aa.png", alt: "Wearables Color System — semantic tokens" },
-        { src: "/manus-storage/94841906_d5562408.png", alt: "Wearables Color System — component tokens" },
-        { src: "/manus-storage/94841910_769b57be.png", alt: "Wearables Color System — day mode" },
-        { src: "/manus-storage/94841911_a8718721.png", alt: "Wearables Color System — night mode" },
-        { src: "/manus-storage/94841918_4c914b82.png", alt: "Wearables Color System — high-glare mode" },
-        { src: "/manus-storage/94841919_9e02f25b.png", alt: "Wearables Color System — partner theming" },
-        { src: "/manus-storage/94841921_0dcaf775.png", alt: "Wearables Color System — Spotify theme" },
-        { src: "/manus-storage/94841932_ba457733.png", alt: "Wearables Color System — SDK preview" },
-        { src: "/manus-storage/App_Tile_After_e8d8984f.png", alt: "Wearables Color System — app tile" },
+        { src: "/manus-storage/94841901_89c4741e.webp", alt: "Wearables Color System — token overview" },
+        { src: "/manus-storage/94841904_0b037e61.webp", alt: "Wearables Color System — primitive tokens" },
+        { src: "/manus-storage/94841905_125081aa.webp", alt: "Wearables Color System — semantic tokens" },
+        { src: "/manus-storage/94841906_d5562408.webp", alt: "Wearables Color System — component tokens" },
+        { src: "/manus-storage/94841910_769b57be.webp", alt: "Wearables Color System — day mode" },
+        { src: "/manus-storage/94841911_a8718721.webp", alt: "Wearables Color System — night mode" },
+        { src: "/manus-storage/94841918_4c914b82.webp", alt: "Wearables Color System — high-glare mode" },
+        { src: "/manus-storage/94841919_9e02f25b.webp", alt: "Wearables Color System — partner theming" },
+        { src: "/manus-storage/94841921_0dcaf775.webp", alt: "Wearables Color System — Spotify theme" },
+        { src: "/manus-storage/94841932_ba457733.webp", alt: "Wearables Color System — SDK preview" },
+        { src: "/manus-storage/App_Tile_After_e8d8984f.webp", alt: "Wearables Color System — app tile" },
         { src: "/manus-storage/94841873_872c1e90.webp", alt: "Wearables Color System — display surface" },
       ],
     },
@@ -67,7 +67,7 @@ const data: CaseStudyData = {
     },
     {
       type: "image-full",
-      image: "/manus-storage/94841872_cf72a9b7.png",
+      image: "/manus-storage/94841872_cf72a9b7.webp",
       imageAlt: "Early Color Principles — Color Should Have Purpose, Be Consistent, Be Predictable",
     },
     {
@@ -77,7 +77,7 @@ const data: CaseStudyData = {
       closingBody:
         "The Wearables Color System shipped as the foundation for all Meta wearable products in 2025. The third-party theming SDK is available to all developers building on the Meta wearables platform.",
       // TODO: swap with Wearables closing media
-      closingMedia: "/manus-storage/color-system-tokens-new_611a9c96.png",
+      closingMedia: "/manus-storage/color-system-tokens-new_611a9c96.webp",
       nextProject: {
         title: "EMG Handwriting",
         slug: "emg-handwriting",

@@ -69,7 +69,7 @@ const data: CaseStudyData = {
         "A suite of tools that gave the team back the time to do their best work.",
       closingBody:
         "The Design Systems Tooling suite shipped internally in 2025 and is now used by every designer working on Meta's wearables products. The linter has caught thousands of token violations, the AI docs have eliminated the documentation backlog, and the vibe IDE has become the primary design environment for new component development.",
-      closingMedia: "/manus-storage/Screenshot2026-03-25at10.56.46AM1_f69286d0.png",
+      closingMedia: "/manus-storage/Screenshot2026-03-25at10.56.46AM1_f69286d0.webp",
       nextProject: {
         title: "Ray-Ban Meta Display Design System",
         slug: "rayban-display-ds",

@@ -50,7 +50,7 @@ const data: CaseStudyData = {
       carouselLeftBody: "Every component in the Ray-Ban Meta Display System was designed against the waveguide's optical constraints — tested for flaring, ghosting, and legibility across Day, Night, and High-Glare modes before it shipped.",
       carouselCards: [
         {
-          src: "/manus-storage/rb-card-photo_13edb2f2.png",
+          src: "/manus-storage/rb-card-photo_13edb2f2.webp",
           alt: "Ray-Ban Meta Display — Photo Card component",
           label: "Photo Card",
           num: "01",
@@ -60,7 +60,7 @@ const data: CaseStudyData = {
           tags: ["MEDIA", "DISPLAY"],
         },
         {
-          src: "/manus-storage/rayban-messaging-sheena_e208ee50.png",
+          src: "/manus-storage/rayban-messaging-sheena_e208ee50.webp",
           alt: "Ray-Ban Meta Display — Messaging component",
           label: "Messaging",
           num: "02",
@@ -70,7 +70,7 @@ const data: CaseStudyData = {
           tags: ["COMMUNICATION", "GLANCEABLE"],
         },
         {
-          src: "/manus-storage/rayban-weather-card_278dff57.png",
+          src: "/manus-storage/rayban-weather-card_278dff57.webp",
           alt: "Ray-Ban Meta Display — Widgets component",
           label: "Widgets",
           num: "03",
@@ -80,7 +80,7 @@ const data: CaseStudyData = {
           tags: ["AMBIENT", "ALWAYS-ON"],
         },
         {
-          src: "/manus-storage/rb-card-notifications_4cf7b852.png",
+          src: "/manus-storage/rb-card-notifications_4cf7b852.webp",
           alt: "Ray-Ban Meta Display — Notifications component",
           label: "Notifications",
           num: "04",
@@ -90,7 +90,7 @@ const data: CaseStudyData = {
           tags: ["ALERTS", "INTERRUPTIVE"],
         },
         {
-          src: "/manus-storage/rb-card-applauncher_5481304f.png",
+          src: "/manus-storage/rb-card-applauncher_5481304f.webp",
           alt: "Ray-Ban Meta Display — App Launcher component",
           label: "App Launcher",
           num: "05",
@@ -100,7 +100,7 @@ const data: CaseStudyData = {
           tags: ["NAVIGATION", "RADIAL"],
         },
         {
-          src: "/manus-storage/rb-card-search_80a296ef.png",
+          src: "/manus-storage/rb-card-search_80a296ef.webp",
           alt: "Ray-Ban Meta Display — Search component",
           label: "Search",
           num: "06",
@@ -110,7 +110,7 @@ const data: CaseStudyData = {
           tags: ["VOICE", "NAVIGATION"],
         },
         {
-          src: "/manus-storage/rb-card-ambient_6345664a.png",
+          src: "/manus-storage/rb-card-ambient_6345664a.webp",
           alt: "Ray-Ban Meta Display — Ambient component",
           label: "Ambient",
           num: "07",
@@ -120,7 +120,7 @@ const data: CaseStudyData = {
           tags: ["ALWAYS-ON", "GLANCEABLE"],
         },
         {
-          src: "/manus-storage/rb-card-liveai_65d7a71b.png",
+          src: "/manus-storage/rb-card-liveai_65d7a71b.webp",
           alt: "Ray-Ban Meta Display — Live AI component",
           label: "Live AI",
           num: "08",

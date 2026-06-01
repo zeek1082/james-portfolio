@@ -16,7 +16,7 @@ import { addLenisScrollListener, removeLenisScrollListener, scrollTo } from "@/h
 import { motion, AnimatePresence } from "framer-motion";
 import { useUnlock } from "@/contexts/UnlockContext";
 
-const WDS_DOCS = "/manus-storage/wds-docs_dbcd9481.png";
+const WDS_DOCS = "/manus-storage/wds-docs_dbcd9481.webp";
 
 const navItems = [
   { label: "Work", target: "#work" },
