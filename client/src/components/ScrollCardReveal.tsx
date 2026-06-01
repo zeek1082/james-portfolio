@@ -383,7 +383,7 @@ export default function ScrollCardReveal({
   leftHeadline,
   leftBody,
   accent = "#4ADE80",
-  scrollMultiplier = 1.4,
+  scrollMultiplier = 1.1,
 }: ScrollCardRevealProps) {
   const outerRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef<number>(0);

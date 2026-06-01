@@ -103,7 +103,7 @@ const projects: Project[] = [
 ];
 
 const CARD_GAP_VW = 3; // gap between cards in vw
-const TOTAL_SCROLL_MULTIPLIER = 7; // total scroll height = N * this * 100vh
+const TOTAL_SCROLL_MULTIPLIER = 5; // total scroll height = N * this * 100vh
 
 function CaseStudyButton({ active }: { active: Project }) {
   const [, setLocation] = useLocation();

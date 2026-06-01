@@ -249,7 +249,7 @@ export default function PasswordGate({ children }: PasswordGateProps) {
                     padding: "0.75rem 1.25rem",
                     width: "240px",
                     outline: "none",
-                    textAlign: "center",
+                    textAlign: "left",
                     transition: "border-color 200ms ease",
                   }}
                   onFocus={(e) => { if (!error) e.target.style.borderColor = "rgba(242,237,232,0.7)"; }}
