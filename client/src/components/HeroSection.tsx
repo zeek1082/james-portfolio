@@ -51,19 +51,44 @@ export default function HeroSection() {
     }
   }, [onUnlock, alreadyAuthed]);
 
-  // GSAP scroll: single container animation (one GPU layer instead of three)
+  // GSAP scroll: split animation — willChange pre-rasterizes text as GPU texture
+  // so movement is compositor-only, same performance as animating an image
   useEffect(() => {
     const ctx = gsap.context(() => {
       if (titleRef.current) {
         gsap.to(titleRef.current, {
-          y: "-8%",
-          opacity: 0,
+          scale: 1.06,
+          y: "-6%",
           ease: "none",
           scrollTrigger: {
             trigger: "#hero",
             start: "top top",
-            end: "70% top",
-            scrub: 1,
+            end: "80% top",
+            scrub: 1.5,
+          },
+        });
+      }
+      if (jamesRef.current) {
+        gsap.to(jamesRef.current, {
+          x: "-18vw",
+          ease: "none",
+          scrollTrigger: {
+            trigger: "#hero",
+            start: "top top",
+            end: "100% top",
+            scrub: 1.8,
+          },
+        });
+      }
+      if (smithRef.current) {
+        gsap.to(smithRef.current, {
+          x: "18vw",
+          ease: "none",
+          scrollTrigger: {
+            trigger: "#hero",
+            start: "top top",
+            end: "100% top",
+            scrub: 1.8,
           },
         });
       }
@@ -158,6 +183,7 @@ export default function HeroSection() {
             textAlign: "center",
             whiteSpace: "nowrap",
             userSelect: "none",
+            willChange: "transform",
           }}
         >
           JAMES
@@ -174,6 +200,7 @@ export default function HeroSection() {
             textAlign: "center",
             whiteSpace: "nowrap",
             userSelect: "none",
+            willChange: "transform",
           }}
         >
           SMITH
