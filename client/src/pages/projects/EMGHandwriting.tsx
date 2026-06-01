@@ -11,7 +11,7 @@ const data: CaseStudyData = {
     {
       type: "video-hero",
       // TODO: swap with EMG hero video
-      videoSrc: "/manus-storage/emg_66e3f127.mov",
+      videoSrc: "/manus-storage/emg_66e3f127.mp4",
       heroTitle: "EMG Handwriting",
       heroCategory: "Neural Input",
       heroYear: "2026",
@@ -71,7 +71,7 @@ const data: CaseStudyData = {
         "Shipped to users in spring 2026. The first text input that utilizes precise muscle movements",
       closingBody:
         "EMG Handwriting launched as part of the Meta Neural Band release in spring 2026. It is the first consumer product to offer EMG-based text input, and it represents a new paradigm for how we interact with wearable devices.",
-      closingMedia: "/manus-storage/emg_f3fed8a6.mov",
+      closingMedia: "/manus-storage/emg_f3fed8a6.mp4",
       nextProject: {
         title: "AI-Powered Smartwatch",
         slug: "ai-smartwatch",
