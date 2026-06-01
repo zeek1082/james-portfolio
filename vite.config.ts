@@ -7,13 +7,8 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
-      "@": path.resolve(process.cwd(), "client", "src"),
-      "@shared": path.resolve(process.cwd(), "shared"),
+      "@": path.resolve(__dirname, "src"),
+      "@shared": path.resolve(__dirname, "../shared"),
     },
-  },
-  root: path.resolve(process.cwd(), "client"),
-  build: {
-    outDir: path.resolve(process.cwd(), "client", "dist"),
-    emptyOutDir: true,
   },
 });
