@@ -1,0 +1,568 @@
+/*
+ * DESIGN SYSTEM: "Signal in the Dark"
+ * James Smith Portfolio — Product Designer at Meta
+ *
+ * Philosophy: Cinematic dark editorial. The page breathes — background tints shift
+ * as you scroll. Typography at cinematic scale. Projects emerge from darkness.
+ *
+ * Color: Near-black (#080808) base. Electric violet (#7B5EA7) → cyan (#00D4FF) accents.
+ * Type: Syne (display) / DM Sans (body) / Space Mono (labels/metadata)
+ * Motion: Framer Motion entrances, scroll-linked parallax, section color morphing
+ */
+
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Custom design tokens */
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-mono: 'Space Mono', monospace;
+
+  --color-violet: #7B5EA7;
+  --color-violet-bright: #9B7EC8;
+  --color-cyan: #00D4FF;
+  --color-cyan-dim: #00A8CC;
+  --color-surface-1: #0F0F0F;
+  --color-surface-2: #141414;
+  --color-surface-3: #1A1A1A;
+
+  --ease-out-expo: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out-expo: cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+/* Dark theme as default */
+:root {
+  --radius: 0.5rem;
+  --background: oklch(0.07 0 0);
+  --foreground: oklch(0.95 0 0);
+  --card: oklch(0.10 0 0);
+  --card-foreground: oklch(0.95 0 0);
+  --popover: oklch(0.10 0 0);
+  --popover-foreground: oklch(0.95 0 0);
+  --primary: oklch(0.60 0.15 290);
+  --primary-foreground: oklch(0.98 0 0);
+  --secondary: oklch(0.14 0 0);
+  --secondary-foreground: oklch(0.80 0 0);
+  --muted: oklch(0.14 0 0);
+  --muted-foreground: oklch(0.55 0 0);
+  --accent: oklch(0.14 0 0);
+  --accent-foreground: oklch(0.95 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.985 0 0);
+  --border: oklch(1 0 0 / 8%);
+  --input: oklch(1 0 0 / 10%);
+  --ring: oklch(0.60 0.15 290);
+  --chart-1: oklch(0.60 0.15 290);
+  --chart-2: oklch(0.70 0.15 200);
+  --chart-3: oklch(0.65 0.12 250);
+  --chart-4: oklch(0.55 0.18 310);
+  --chart-5: oklch(0.75 0.10 180);
+  --sidebar: oklch(0.10 0 0);
+  --sidebar-foreground: oklch(0.95 0 0);
+  --sidebar-primary: oklch(0.60 0.15 290);
+  --sidebar-primary-foreground: oklch(0.98 0 0);
+  --sidebar-accent: oklch(0.14 0 0);
+  --sidebar-accent-foreground: oklch(0.95 0 0);
+  --sidebar-border: oklch(1 0 0 / 8%);
+  --sidebar-ring: oklch(0.60 0.15 290);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    background-color: #080808;
+    /* scroll-behavior: smooth intentionally removed — Lenis handles smooth
+       scrolling. Native scroll-behavior conflicts with Lenis and causes double-smoothing. */
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'DM Sans', sans-serif;
+    background-color: #080808;
+    color: #F0F0F0;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [type="button"]:not(:disabled),
+  [type="submit"]:not(:disabled),
+  a[href],
+  select:not(:disabled) {
+    @apply cursor-pointer;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Syne', sans-serif;
+  }
+}
+
+@layer components {
+  .container {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  .flex {
+    min-height: 0;
+    min-width: 0;
+  }
+
+  @media (min-width: 640px) {
+    .container {
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .container {
+      padding-left: 4rem;
+      padding-right: 4rem;
+      max-width: 1440px;
+    }
+  }
+
+  /* Typography utilities */
+  .font-display { font-family: 'Syne', sans-serif; }
+  .font-body { font-family: 'DM Sans', sans-serif; }
+  .font-mono-label { font-family: 'Space Mono', monospace; }
+
+  /* Gradient text */
+  .text-gradient {
+    background: linear-gradient(135deg, #7B5EA7 0%, #00D4FF 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-subtle {
+    background: linear-gradient(135deg, #9B7EC8 0%, #60C8E8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Glow effects */
+  .glow-violet {
+    box-shadow: 0 0 40px rgba(123, 94, 167, 0.3), 0 0 80px rgba(123, 94, 167, 0.1);
+  }
+
+  .glow-cyan {
+    box-shadow: 0 0 40px rgba(0, 212, 255, 0.2), 0 0 80px rgba(0, 212, 255, 0.08);
+  }
+
+  /* Project card hover */
+  .project-card {
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .project-card:hover {
+    transform: translateY(-4px);
+  }
+
+  .project-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(123, 94, 167, 0.08) 0%, rgba(0, 212, 255, 0.04) 100%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .project-card:hover::after {
+    opacity: 1;
+  }
+
+  /* Image card hover tilt */
+  .img-card-hover {
+    transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    transform-style: preserve-3d;
+    will-change: transform;
+  }
+
+  .img-card-hover:hover {
+    transform: translateY(-6px) rotate(-0.5deg) scale(1.01);
+    box-shadow: 0 60px 120px rgba(0,0,0,0.6) !important;
+  }
+
+  /* Marquee animation */
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  .marquee-track {
+    animation: marquee 30s linear infinite;
+    display: flex;
+    width: max-content;
+  }
+
+  /* Section color morphing backgrounds */
+  .section-dark { background-color: #080808; }
+  .section-navy { background-color: #08080F; }
+  .section-charcoal { background-color: #0C0C0C; }
+  .section-violet-tint { background-color: #0A0812; }
+  .section-warm { background-color: #0C0908; }
+
+  /* Noise texture overlay */
+  .noise-overlay::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 2px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #080808;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #7B5EA7, #00D4FF);
+    border-radius: 2px;
+  }
+
+  /* Line reveal animation */
+  .line-reveal {
+    overflow: hidden;
+  }
+
+  .line-reveal > * {
+    display: block;
+    transform: translateY(100%);
+    transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .line-reveal.revealed > * {
+    transform: translateY(0);
+  }
+
+  /* Image parallax container */
+  .parallax-container {
+    overflow: hidden;
+    position: relative;
+  }
+
+  .parallax-image {
+    will-change: transform;
+    transform-origin: center center;
+  }
+
+  /* Nav link hover */
+  .nav-link {
+    position: relative;
+    letter-spacing: 0.05em;
+    transition: letter-spacing 0.3s ease, color 0.3s ease;
+  }
+
+  .nav-link:hover {
+    letter-spacing: 0.12em;
+    color: #ffffff;
+  }
+
+  /* Button styles */
+  .btn-outline-glow {
+    border: 1px solid rgba(123, 94, 167, 0.4);
+    color: #9B7EC8;
+    background: transparent;
+    padding: 0.75rem 2rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+  }
+
+  .btn-outline-glow:hover {
+    border-color: rgba(0, 212, 255, 0.6);
+    color: #00D4FF;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.15);
+  }
+
+  /* Tag/label pill */
+  .tag-pill {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 100px;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  /* ============================================================
+   * FOUDRE-STYLE CONTENT ANIMATION SYSTEM
+   * All animations driven by IntersectionObserver adding .is-inview
+   * No GSAP for content reveals — pure CSS transitions
+   * ============================================================ */
+
+  /* --- 1. WORD / LINE REVEAL ---
+   * Wrapper: overflow:hidden clips the sliding word
+   * Inner span: starts at translateY(120%), slides to translateY(0)
+   * Exact Foudre: .o-homeManifest_wordWrapper + .o-homeManifest_word
+   */
+  .word-wrap {
+    display: inline-flex;
+    overflow: hidden;
+    transform: translateZ(0);
+  }
+
+  .word-inner {
+    display: inline-block;
+    transform: translateY(120%);
+    backface-visibility: hidden;
+    transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1) var(--delay, 0ms);
+  }
+
+  .is-inview .word-inner {
+    transform: translateY(0);
+  }
+
+  /* --- 2. LINE REVEAL (full text line slides up from clip) --- */
+  .line-wrap {
+    overflow: hidden;
+    display: block;
+  }
+
+  .line-inner {
+    display: block;
+    transform: translateY(110%);
+    transition: transform 1.3s cubic-bezier(0.19, 1, 0.22, 1) var(--delay, 0ms);
+  }
+
+  .is-inview .line-inner {
+    transform: translateY(0);
+  }
+
+  /* --- 3. IMAGE SCALE-IN ---
+   * Container: overflow:hidden
+   * Image: starts scale(1.15), transitions to scale(1)
+   * Exact Foudre: .m-projectCard_cover transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1)
+   */
+  .img-reveal-wrap {
+    overflow: hidden;
+    position: relative;
+  }
+
+  .img-reveal {
+    transform: scale(1.18);
+    transition: transform 1.6s cubic-bezier(0.645, 0.045, 0.355, 1) var(--delay, 0ms);
+    will-change: transform;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .is-inview .img-reveal {
+    transform: scale(1);
+  }
+
+  /* --- 4. CARD ENTRANCE ---
+   * Starts: translateY(25%) + opacity:0
+   * Ends: translateY(0) + opacity:1
+   * Exact Foudre: .o-homeProjects_item with 2s cubic-bezier(.19,1,.22,1)
+   */
+  .card-reveal {
+    opacity: 0;
+    transform: translateY(40%) translateZ(0);
+    transition:
+      transform 2.2s cubic-bezier(0.19, 1, 0.22, 1) var(--delay, 0ms),
+      opacity 1s cubic-bezier(0.165, 0.84, 0.44, 1) var(--delay, 0ms);
+    backface-visibility: hidden;
+  }
+
+  .is-inview .card-reveal {
+    opacity: 1;
+    transform: translateY(0) translateZ(0);
+  }
+
+  /* --- 5. FADE UP (subtle, for secondary elements) --- */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(32px);
+    transition:
+      opacity 1s cubic-bezier(0.23, 1, 0.32, 1) var(--delay, 0ms),
+      transform 1s cubic-bezier(0.23, 1, 0.32, 1) var(--delay, 0ms);
+  }
+
+  .is-inview .fade-up {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* --- 6. SCALE IN (for tags, pills, dots) ---
+   * Exact Foudre: .m-projectCard .a-tag with scale(0) → scale(1) + rotate(3deg) → 0
+   */
+  .scale-in {
+    opacity: 0;
+    transform: translateY(40%) rotate(3deg) scale(0);
+    transition:
+      transform 0.8s cubic-bezier(0.86, 0, 0.07, 1) var(--delay, 0ms),
+      opacity 0.8s cubic-bezier(0.86, 0, 0.07, 1) var(--delay, 0ms);
+  }
+
+  .is-inview .scale-in {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+
+  /* --- 7. HORIZONTAL LINE REVEAL (accent lines) ---
+   * scaleX(0) → scaleX(1) from left
+   */
+  .line-reveal-h {
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1) var(--delay, 0ms);
+  }
+
+  .is-inview .line-reveal-h {
+    transform: scaleX(1);
+  }
+
+  /* --- 8. STICKY SCROLL SECTION (Foudre manifest style) ---
+   * height: 300vh, inner screen is sticky
+   */
+  .sticky-scroll-section {
+    position: relative;
+    height: 150vh;
+  }
+
+  .sticky-screen {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  /* --- 9. SLIDE IN FROM SIDE (text panels) ---
+   * Text panel slides in from left or right as section enters
+   */
+  .slide-in-left {
+    opacity: 0;
+    transform: translateX(-60px) translateZ(0);
+    transition:
+      transform 1.4s cubic-bezier(0.19, 1, 0.22, 1) var(--delay, 0ms),
+      opacity 1s cubic-bezier(0.23, 1, 0.32, 1) var(--delay, 0ms);
+  }
+
+  .slide-in-right {
+    opacity: 0;
+    transform: translateX(60px) translateZ(0);
+    transition:
+      transform 1.4s cubic-bezier(0.19, 1, 0.22, 1) var(--delay, 0ms),
+      opacity 1s cubic-bezier(0.23, 1, 0.32, 1) var(--delay, 0ms);
+  }
+
+  .is-inview .slide-in-left,
+  .is-inview .slide-in-right {
+    opacity: 1;
+    transform: translateX(0) translateZ(0);
+  }
+
+  /* --- 10. CLIP REVEAL (for horizontal rule / divider lines) --- */
+  .clip-reveal {
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path 1s cubic-bezier(0.23, 1, 0.32, 1) var(--delay, 0ms);
+  }
+
+  .is-inview .clip-reveal {
+    clip-path: inset(0 0% 0 0);
+  }
+
+  /* --- 11. STAGGER CHILDREN (parent adds is-inview, children stagger) --- */
+  .stagger-children > * {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+      opacity 0.9s cubic-bezier(0.23, 1, 0.32, 1),
+      transform 0.9s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .stagger-children > *:nth-child(1) { transition-delay: 0ms; }
+  .stagger-children > *:nth-child(2) { transition-delay: 80ms; }
+  .stagger-children > *:nth-child(3) { transition-delay: 160ms; }
+  .stagger-children > *:nth-child(4) { transition-delay: 240ms; }
+  .stagger-children > *:nth-child(5) { transition-delay: 320ms; }
+  .stagger-children > *:nth-child(6) { transition-delay: 400ms; }
+
+  .is-inview .stagger-children > * {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Divider line */
+  .divider-gradient {
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, rgba(123, 94, 167, 0.4) 30%, rgba(0, 212, 255, 0.4) 70%, transparent 100%);
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+}
