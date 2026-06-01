@@ -51,44 +51,19 @@ export default function HeroSection() {
     }
   }, [onUnlock, alreadyAuthed]);
 
-  // GSAP scroll: title scales up + cards spread as user scrolls
+  // GSAP scroll: single container animation (one GPU layer instead of three)
   useEffect(() => {
     const ctx = gsap.context(() => {
       if (titleRef.current) {
         gsap.to(titleRef.current, {
-          scale: 1.06,
-          y: "-6%",
+          y: "-8%",
+          opacity: 0,
           ease: "none",
           scrollTrigger: {
             trigger: "#hero",
             start: "top top",
-            end: "80% top",
-            scrub: 1.5,
-          },
-        });
-      }
-
-      if (jamesRef.current) {
-        gsap.to(jamesRef.current, {
-          x: "-18vw",
-          ease: "none",
-          scrollTrigger: {
-            trigger: "#hero",
-            start: "top top",
-            end: "100% top",
-            scrub: 1.8,
-          },
-        });
-      }
-      if (smithRef.current) {
-        gsap.to(smithRef.current, {
-          x: "18vw",
-          ease: "none",
-          scrollTrigger: {
-            trigger: "#hero",
-            start: "top top",
-            end: "100% top",
-            scrub: 1.8,
+            end: "70% top",
+            scrub: 1,
           },
         });
       }
@@ -162,6 +137,7 @@ export default function HeroSection() {
           zIndex: 1,
           pointerEvents: "none",
           transformOrigin: "top center",
+          willChange: "transform, opacity",
           // Scale-in from slightly small — continues the gate zoom motion
           opacity: titleReady ? 1 : 0,
           transform: titleReady ? "scale(1)" : "scale(0.88)",
