@@ -95,31 +95,7 @@ export default function VideoBreakSection() {
         }}
       />
 
-      {/* Red channel shift */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          zIndex: 3,
-          pointerEvents: "none",
-          background: "rgba(255,0,60,0.04)",
-          transform: "translateX(-2px)",
-          mixBlendMode: "screen",
-        }}
-      />
 
-      {/* Cyan channel shift */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          zIndex: 3,
-          pointerEvents: "none",
-          background: "rgba(0,220,255,0.04)",
-          transform: "translateX(2px)",
-          mixBlendMode: "screen",
-        }}
-      />
       {/* Static noise grain — GPU background-position shift instead of feTurbulence */}
       <div
         style={{
@@ -128,8 +104,7 @@ export default function VideoBreakSection() {
           backgroundImage: "url('/manus-storage/noise.webp')",
           backgroundRepeat: "repeat",
           backgroundSize: "128px 128px",
-          opacity: 0.18,
-          mixBlendMode: "overlay",
+          opacity: 0.12,
           zIndex: 4,
           pointerEvents: "none",
           animation: "noiseShift 0.12s steps(1) infinite",
