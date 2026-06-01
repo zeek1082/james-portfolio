@@ -1,5 +1,4 @@
 {
-  "rootDirectory": "client",
   "buildCommand": "npx vite build",
   "outputDirectory": "dist",
   "installCommand": "cd .. && pnpm install --no-frozen-lockfile",
