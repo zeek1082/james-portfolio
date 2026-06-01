@@ -722,49 +722,21 @@ function ProjectCard({
           mixBlendMode: "screen",
         }}
       />
-
-      {/* Film grain — static base */}
-      <svg
+      {/* Static noise grain — replaces feTurbulence SVG filters */}
+      <div
         style={{
           position: "absolute",
           inset: 0,
-          width: "100%",
-          height: "100%",
-          zIndex: 4,
-          opacity: 0.15,
-          pointerEvents: "none",
+          backgroundImage: "url('/manus-storage/noise.webp')",
+          backgroundRepeat: "repeat",
+          backgroundSize: "128px 128px",
+          opacity: 0.12,
           mixBlendMode: "overlay",
-        }}
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <filter id={`grain-card-${project.num}`}>
-          <feTurbulence type="fractalNoise" baseFrequency="0.72" numOctaves="4" stitchTiles="stitch" />
-          <feColorMatrix type="saturate" values="0" />
-        </filter>
-        <rect width="100%" height="100%" filter={`url(#grain-card-${project.num})`} />
-      </svg>
-
-      {/* Film grain — animated flicker */}
-      <svg
-        className="grain-flicker"
-        style={{
-          position: "absolute",
-          inset: "-10%",
-          width: "120%",
-          height: "120%",
           zIndex: 4,
-          opacity: 0.1,
           pointerEvents: "none",
-          mixBlendMode: "screen",
+          animation: "noiseShift 0.12s steps(1) infinite",
         }}
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <filter id={`grain-card2-${project.num}`}>
-          <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="4" stitchTiles="stitch" />
-          <feColorMatrix type="saturate" values="0" />
-        </filter>
-        <rect width="100%" height="100%" filter={`url(#grain-card2-${project.num})`} />
-      </svg>
+      />
 
       <div
         style={{

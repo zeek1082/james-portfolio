@@ -120,65 +120,21 @@ export default function VideoBreakSection() {
           mixBlendMode: "screen",
         }}
       />
-
-      {/* Film grain — static base */}
-      <svg
+      {/* Static noise grain — GPU background-position shift instead of feTurbulence */}
+      <div
         style={{
           position: "absolute",
           inset: 0,
-          width: "100%",
-          height: "100%",
-          zIndex: 4,
-          opacity: 0.15,
-          pointerEvents: "none",
+          backgroundImage: "url('/manus-storage/noise.webp')",
+          backgroundRepeat: "repeat",
+          backgroundSize: "128px 128px",
+          opacity: 0.18,
           mixBlendMode: "overlay",
-        }}
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <filter id="grain-b">
-          <feTurbulence type="fractalNoise" baseFrequency="0.72" numOctaves="4" stitchTiles="stitch" />
-          <feColorMatrix type="saturate" values="0" />
-        </filter>
-        <rect width="100%" height="100%" filter="url(#grain-b)" />
-      </svg>
-
-      {/* Film grain — animated flicker layer */}
-      <style>{`
-        @keyframes grain-flicker {
-          0%   { transform: translate(0,0); }
-          10%  { transform: translate(-2%,-3%); }
-          20%  { transform: translate(3%,1%); }
-          30%  { transform: translate(-1%,4%); }
-          40%  { transform: translate(2%,-2%); }
-          50%  { transform: translate(-3%,2%); }
-          60%  { transform: translate(1%,-4%); }
-          70%  { transform: translate(-2%,3%); }
-          80%  { transform: translate(3%,-1%); }
-          90%  { transform: translate(-1%,2%); }
-          100% { transform: translate(0,0); }
-        }
-        .grain-flicker { animation: grain-flicker 0.12s steps(1) infinite; }
-      `}</style>
-      <svg
-        className="grain-flicker"
-        style={{
-          position: "absolute",
-          inset: "-10%",
-          width: "120%",
-          height: "120%",
           zIndex: 4,
-          opacity: 0.1,
           pointerEvents: "none",
-          mixBlendMode: "screen",
+          animation: "noiseShift 0.12s steps(1) infinite",
         }}
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <filter id="grain-b2">
-          <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="4" stitchTiles="stitch" />
-          <feColorMatrix type="saturate" values="0" />
-        </filter>
-        <rect width="100%" height="100%" filter="url(#grain-b2)" />
-      </svg>
+      />
 
       {/* Bottom-left text overlay */}
       <div

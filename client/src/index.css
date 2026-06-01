@@ -606,3 +606,18 @@
   }
 }
 
+
+/* Noise grain flicker — GPU background-position shift (no CPU SVG filter) */
+@keyframes noiseShift {
+  0%   { background-position: 0 0; }
+  10%  { background-position: -15px -20px; }
+  20%  { background-position: 20px 8px; }
+  30%  { background-position: -8px 25px; }
+  40%  { background-position: 12px -15px; }
+  50%  { background-position: -20px 12px; }
+  60%  { background-position: 8px -25px; }
+  70%  { background-position: -12px 18px; }
+  80%  { background-position: 22px -8px; }
+  90%  { background-position: -5px 15px; }
+  100% { background-position: 0 0; }
+}
