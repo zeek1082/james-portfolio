@@ -674,67 +674,14 @@ function ProjectCard({
         }}
       />
 
-      {/* Base gradient */}
+      {/* Simple gradient for text legibility */}
       <div
         style={{
           position: "absolute",
           inset: 0,
           background:
-            "linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, transparent 40%, transparent 55%, rgba(0,0,0,0.75) 100%)",
-        }}
-      />
-
-      {/* Scanlines */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          zIndex: 2,
+            "linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, transparent 40%, transparent 55%, rgba(0,0,0,0.65) 100%)",
           pointerEvents: "none",
-          backgroundImage:
-            "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.18) 2px, rgba(0,0,0,0.18) 4px)",
-          backgroundSize: "100% 4px",
-        }}
-      />
-
-      {/* Red channel shift */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          zIndex: 3,
-          pointerEvents: "none",
-          background: "rgba(255,0,60,0.04)",
-          transform: "translateX(-2px)",
-          mixBlendMode: "screen",
-        }}
-      />
-
-      {/* Cyan channel shift */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          zIndex: 3,
-          pointerEvents: "none",
-          background: "rgba(0,220,255,0.04)",
-          transform: "translateX(2px)",
-          mixBlendMode: "screen",
-        }}
-      />
-      {/* Static noise grain — replaces feTurbulence SVG filters */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          backgroundImage: "url('/manus-storage/noise.webp')",
-          backgroundRepeat: "repeat",
-          backgroundSize: "128px 128px",
-          opacity: 0.12,
-          mixBlendMode: "overlay",
-          zIndex: 4,
-          pointerEvents: "none",
-          animation: "noiseShift 0.12s steps(1) infinite",
         }}
       />
 
