@@ -1335,12 +1335,12 @@ function ClosingSection({
               style={{
                 fontFamily: "'Barlow Condensed', sans-serif",
                 fontWeight: 800,
-                fontSize: '54px',
+                fontSize: 'clamp(2rem, 5vw, 54px)',
                 color: "#0A0908",
                 margin: "0 0 2rem",
                 textTransform: "uppercase",
                 lineHeight: 0.95,
-                width: "724px",
+                width: "100%",
               }}
             >
               {s.closingHeadline}

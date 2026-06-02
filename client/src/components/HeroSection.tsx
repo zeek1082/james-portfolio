@@ -24,17 +24,16 @@ const RAYBAN_IMG = "/manus-storage/rayban-meta-hero_1a588487.webp";
 
 export default function HeroSection() {
   const { onUnlock } = useUnlock();
+  // Check auth before useState so we can use it as default value
+  const alreadyAuthed = (() => { try { return sessionStorage.getItem("js_portfolio_auth") === "1"; } catch { return false; } })();
   const heroRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const jamesRef = useRef<HTMLDivElement>(null);
   const smithRef = useRef<HTMLDivElement>(null);
   const glitchRafRef = useRef<number>(0);
   const lastScrollY = useRef<number>(0);
-  const [loaded, setLoaded] = useState(false);
-  const [titleReady, setTitleReady] = useState(false);
-
-  // Check if already authenticated (skip gate animation)
-  const alreadyAuthed = (() => { try { return sessionStorage.getItem("js_portfolio_auth") === "1"; } catch { return false; } })();
+  const [loaded, setLoaded] = useState(alreadyAuthed);
+  const [titleReady, setTitleReady] = useState(alreadyAuthed);
 
   // Gate ALL hero content behind unlock event (or show immediately if already authed)
   useEffect(() => {
@@ -111,7 +110,7 @@ export default function HeroSection() {
       data-bg-color="#F2EDE8"
       style={{
         position: "relative",
-        minHeight: "100svh",
+        minHeight: isMobile ? "auto" : "100svh",
         backgroundColor: "#F2EDE8",
         overflow: "hidden",
         display: "flex",
