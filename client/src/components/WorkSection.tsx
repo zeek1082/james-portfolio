@@ -180,7 +180,8 @@ export default function WorkSection() {
   const headingRef = useRef<HTMLHeadingElement>(null);
   const headerRafRef = useRef<number>(0);
   const lastHeaderScrollY = useRef<number>(0);
-  const activeIndexRef = useRef<number>(0); // guards against redundant setState
+  const activeIndexRef = useRef<number>(0);
+  const [sectionInView, setSectionInView] = useState(false); // guards against redundant setState
 
   // Cached layout measurements — recomputed only on resize, not every scroll tick
   const cachedLayout = useRef<{ cardW: number; gapPx: number; step: number; centerLeft: number; outerHeight: number; outerTop: number } | null>(null);
@@ -198,6 +199,17 @@ export default function WorkSection() {
     const outerHeight = outer.offsetHeight;
     const outerTop = outer.getBoundingClientRect().top + window.scrollY; // absolute top
     cachedLayout.current = { cardW, gapPx, step, centerLeft, outerHeight, outerTop };
+  }, []);
+
+  // Trigger fade-up animations when header enters viewport
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) { setSectionInView(true); obs.disconnect(); }
+    }, { threshold: 0.1 });
+    obs.observe(el);
+    return () => obs.disconnect();
   }, []);
 
   useEffect(() => {
@@ -386,6 +398,7 @@ export default function WorkSection() {
           borderBottom: "1px solid rgba(255,255,255,0.06)",
           overflow: "hidden",
         }}
+        className={sectionInView ? "is-inview" : ""}
       >
         <span
           style={{
@@ -416,6 +429,7 @@ export default function WorkSection() {
           Some of my recent work
         </h2>
         <p
+          className="fade-up"
           style={{
             fontFamily: "DM Sans, sans-serif",
             fontWeight: 300,
@@ -424,7 +438,8 @@ export default function WorkSection() {
             color: "rgba(14,12,10,0.45)",
             maxWidth: "520px",
             margin: "1.5rem 0 0",
-          }}
+            "--delay": "200ms",
+          } as React.CSSProperties}
         >
           Each project below was led by me as Design Lead — driving strategy and direction across a team of 15 visual, product, motion, content, and accessibility designers.
         </p>
