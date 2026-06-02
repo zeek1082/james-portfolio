@@ -186,13 +186,7 @@ export default function WorkSection() {
   const activeIndexRef = useRef<number>(0);
   const [sectionInView, setSectionInView] = useState(false);
   const [coachVisible, setCoachVisible] = useState(false);
-  const contextParaRef = useRef<HTMLParagraphElement>(null);
-  const dragStartX = useRef<number>(0);
-  const dragStartScrollY = useRef<number>(0);
-  const isDragging = useRef<boolean>(false);
-  const lastDragX = useRef<number>(0);
-  const lastDragTime = useRef<number>(0);
-  const dragVelocity = useRef<number>(0); // guards against redundant setState
+  const contextParaRef = useRef<HTMLParagraphElement>(null); // guards against redundant setState
 
   // Cached layout measurements — recomputed only on resize, not every scroll tick
   const cachedLayout = useRef<{ cardW: number; gapPx: number; step: number; centerLeft: number; outerHeight: number; outerTop: number } | null>(null);
