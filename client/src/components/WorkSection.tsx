@@ -181,7 +181,8 @@ export default function WorkSection() {
   const headerRafRef = useRef<number>(0);
   const lastHeaderScrollY = useRef<number>(0);
   const activeIndexRef = useRef<number>(0);
-  const [sectionInView, setSectionInView] = useState(false); // guards against redundant setState
+  const [sectionInView, setSectionInView] = useState(false);
+  const contextParaRef = useRef<HTMLParagraphElement>(null); // guards against redundant setState
 
   // Cached layout measurements — recomputed only on resize, not every scroll tick
   const cachedLayout = useRef<{ cardW: number; gapPx: number; step: number; centerLeft: number; outerHeight: number; outerTop: number } | null>(null);
@@ -210,6 +211,21 @@ export default function WorkSection() {
     }, { threshold: 0.1 });
     obs.observe(el);
     return () => obs.disconnect();
+  }, []);
+
+  // GSAP scroll-triggered entrance for context paragraph
+  useEffect(() => {
+    const el = contextParaRef.current;
+    if (!el) return;
+    const ctx = gsap.context(() => {
+      gsap.fromTo(el,
+        { opacity: 0, y: 24 },
+        { opacity: 1, y: 0, duration: 0.9, ease: "power3.out",
+          scrollTrigger: { trigger: el, start: "top 85%", once: true }
+        }
+      );
+    });
+    return () => ctx.revert();
   }, []);
 
   useEffect(() => {
@@ -429,6 +445,7 @@ export default function WorkSection() {
           Some of my recent work
         </h2>
         <p
+          ref={contextParaRef}
           style={{
             fontFamily: "DM Sans, sans-serif",
             fontWeight: 300,
@@ -437,7 +454,7 @@ export default function WorkSection() {
             color: "rgba(14,12,10,0.45)",
             maxWidth: "520px",
             margin: "1.5rem 0 0",
-            animation: "fadeSlideUp 0.9s 0.35s cubic-bezier(0.23,1,0.32,1) both",
+            opacity: 0,
           }}
         >
           Each project below was led by me as Design Lead — driving strategy and direction across a team of 15 visual, product, motion, content, and accessibility designers.
