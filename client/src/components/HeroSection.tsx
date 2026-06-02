@@ -111,7 +111,7 @@ export default function HeroSection() {
       data-bg-color="#F2EDE8"
       style={{
         position: "relative",
-        height: "100svh",
+        minHeight: "100svh",
         backgroundColor: "#F2EDE8",
         overflow: "hidden",
         display: "flex",
@@ -164,7 +164,7 @@ export default function HeroSection() {
           style={{
             fontFamily: "Syne, sans-serif",
             fontWeight: 800,
-            fontSize: "clamp(6rem, 18vw, 22rem)",
+            fontSize: "clamp(3rem, 18vw, 22rem)",
             lineHeight: 0.85,
             letterSpacing: "-0.04em",
             color: "#0E0C0A",
@@ -181,7 +181,7 @@ export default function HeroSection() {
           style={{
             fontFamily: "Syne, sans-serif",
             fontWeight: 800,
-            fontSize: "clamp(6rem, 18vw, 22rem)",
+            fontSize: "clamp(3rem, 18vw, 22rem)",
             lineHeight: 0.85,
             letterSpacing: "-0.04em",
             color: "#0E0C0A",

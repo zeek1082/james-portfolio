@@ -1075,9 +1075,9 @@ function GifPairSection({ s }: { s: CaseStudySection }) {
   }, []);
 
   const cardBase: React.CSSProperties = {
-    flex: "1 1 0",
+    width: "100%",
     maxWidth: "640px",
-    borderRadius: "36px",
+    borderRadius: "clamp(16px, 4vw, 36px)",
     overflow: "hidden",
     boxShadow: "0 8px 40px rgba(14,12,10,0.18)",
     willChange: "transform, opacity",
@@ -1117,10 +1117,11 @@ function GifPairSection({ s }: { s: CaseStudySection }) {
       ref={ref}
       style={{
         background: "#F2EDE8",
-        padding: "5rem 4rem",
+        padding: "clamp(2.5rem, 6vw, 5rem) clamp(1.5rem, 5vw, 4rem)",
         display: "flex",
-        gap: "4rem",
-        alignItems: "flex-start",
+        flexDirection: "column",
+        gap: "2rem",
+        alignItems: "center",
         justifyContent: "center",
         overflow: "hidden",
       }}
