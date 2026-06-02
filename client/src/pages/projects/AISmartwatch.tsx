@@ -51,7 +51,7 @@ const data: CaseStudyData = {
       carouselCards: [
         {
           src: "/manus-storage/Frame2147258658(15)_c361178d.webp",
-          alt: "AI Assistant Device — three colourful devices floating",
+          alt: "AI Assistant Device — three colorful devices floating",
           label: "Device Variants",
         },
         {

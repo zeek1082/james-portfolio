@@ -21,7 +21,7 @@ const data: CaseStudyData = {
       overviewHeadline:
         "One color language. Multiple token mappings. Infinite third-party themes.",
       overviewBody:
-        "Meta's wearables family spans smartwatches, phones, and AR display glasses — three fundamentally different display technologies, each with its own colour gamut, brightness ceiling, and viewing conditions. We were tasked with building a single color system that could be themed per device, per ambient condition, and per third-party partner — including Spotify, Apple Music, and other app developers building on the platform.",
+        "Meta's wearables family spans smartwatches, phones, and AR display glasses — three fundamentally different display technologies, each with its own color gamut, brightness ceiling, and viewing conditions. We were tasked with building a single color system that could be themed per device, per ambient condition, and per third-party partner — including Spotify, Apple Music, and other app developers building on the platform.",
       overviewTags: [
         "Color Systems",
         "Token Architecture",
@@ -40,11 +40,11 @@ const data: CaseStudyData = {
     {
       type: "text-block",
       headline: "Three Displays, Three Realities",
-      body: "A colour that reads as a warm amber on an OLED smartwatch can look washed-out on an LCD phone and completely disappear on a waveguide AR display. We started by profiling each display surface — measuring gamut, white point, maximum brightness, and the perceptual effect of ambient light — and used this data to define a set of 'safe zones' for each surface. These safe zones became the constraints that the token system was built around.",
+      body: "A color that reads as a warm amber on an OLED smartwatch can look washed-out on an LCD phone and completely disappear on a waveguide AR display. We started by profiling each display surface — measuring gamut, white point, maximum brightness, and the perceptual effect of ambient light — and used this data to define a set of 'safe zones' for each surface. These safe zones became the constraints that the token system was built around.",
     },
     {
       type: "scroll-gallery",
-      galleryHeadline: "Color Explorations — Every product Covered",
+      galleryHeadline: "Color Explorations — Every Product Covered",
       galleryImages: [
         { src: "/manus-storage/94841901_89c4741e.webp", alt: "Wearables Color System — token overview" },
         { src: "/manus-storage/94841904_0b037e61.webp", alt: "Wearables Color System — primitive tokens" },
@@ -63,7 +63,7 @@ const data: CaseStudyData = {
     {
       type: "text-block",
       headline: "An Open System for Partners",
-      body: "One of the most complex requirements was enabling third-party apps like Spotify and Apple Music to bring their own brand colours into the OS without breaking the system's accessibility or optical safety guarantees. We built a theming SDK that allowed partners to supply a set of brand primitives, which the system would then map to semantic tokens — automatically adjusting for contrast, brightness, and display surface.",
+      body: "One of the most complex requirements was enabling third-party apps like Spotify and Apple Music to bring their own brand colors into the OS without breaking the system's accessibility or optical safety guarantees. We built a theming SDK that allowed partners to supply a set of brand primitives, which the system would then map to semantic tokens — automatically adjusting for contrast, brightness, and display surface.",
     },
     {
       type: "image-full",

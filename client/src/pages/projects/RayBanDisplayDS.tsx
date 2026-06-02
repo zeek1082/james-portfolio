@@ -21,7 +21,7 @@ const data: CaseStudyData = {
       overviewHeadline:
         "Designing for light — a system built to survive the physics of a passthrough display.",
       overviewBody:
-        "The Ray-Ban Meta Display is the first consumer product to place a full-colour in-lens display inside a form factor that looks like ordinary glasses. Unlike a phone screen or a watch face, the display sits in front of the real world — meaning every design decision had to account for ambient light, lens tint, and the optical artifacts that come with waveguide technology. We built a design system from first principles that could hold up in every lighting condition, from a bright outdoor street to a dim restaurant.",
+        "The Ray-Ban Meta Display is the first consumer product to place a full-color in-lens display inside a form factor that looks like ordinary glasses. Unlike a phone screen or a watch face, the display sits in front of the real world — meaning every design decision had to account for ambient light, lens tint, and the optical artifacts that come with waveguide technology. We built a design system from first principles that could hold up in every lighting condition, from a bright outdoor street to a dim restaurant.",
       overviewTags: [
         "Design Systems",
         "Wearable OS",
@@ -40,7 +40,7 @@ const data: CaseStudyData = {
     {
       type: "text-block",
       headline: "Flaring, Ghosting, and the Limits of the Waveguide",
-      body: "Waveguide displays work by bouncing light through a thin piece of glass to reach your eye. The physics of this process create a set of unavoidable optical artifacts — most notably flaring, where bright UI elements bleed into the surrounding image, and ghosting, where high-contrast edges leave a faint trail. Our first challenge was to understand exactly which design choices caused these artifacts, and build a system that minimised them by default.",
+      body: "Waveguide displays work by bouncing light through a thin piece of glass to reach your eye. The physics of this process create a set of unavoidable optical artifacts — most notably flaring, where bright UI elements bleed into the surrounding image, and ghosting, where high-contrast edges leave a faint trail. Our first challenge was to understand exactly which design choices caused these artifacts, and build a system that minimized them by default.",
     },
     {
       type: "card-carousel",
@@ -56,7 +56,7 @@ const data: CaseStudyData = {
           num: "01",
           category: "COMPONENT LIBRARY",
           title: "Photo Card",
-          description: "Full-bleed media card optimised for waveguide rendering — high contrast edges, no flaring at the frame boundary.",
+          description: "Full-bleed media card optimized for waveguide rendering — high contrast edges, no flaring at the frame boundary.",
           tags: ["MEDIA", "DISPLAY"],
         },
         {
@@ -134,7 +134,7 @@ const data: CaseStudyData = {
     {
       type: "text-block",
       headline: "Three Modes, One System",
-      body: "The display needed to remain legible across radically different ambient conditions. We designed three adaptive themes — Day (high ambient light, reduced brightness, increased contrast), Night (low ambient, full brightness, softer gradients), and High-Glare (direct sunlight, maximum contrast, minimal colour). These themes were not separate design files — they were token overrides applied at the OS level, meaning every component automatically adapted without any per-component work.",
+      body: "The display needed to remain legible across radically different ambient conditions. We designed three adaptive themes — Day (high ambient light, reduced brightness, increased contrast), Night (low ambient, full brightness, softer gradients), and High-Glare (direct sunlight, maximum contrast, minimal color). These themes were not separate design files — they were token overrides applied at the OS level, meaning every component automatically adapted without any per-component work.",
     },
     {
       type: "video-break",
