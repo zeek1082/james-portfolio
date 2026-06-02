@@ -429,7 +429,6 @@ export default function WorkSection() {
           Some of my recent work
         </h2>
         <p
-          className="fade-up"
           style={{
             fontFamily: "DM Sans, sans-serif",
             fontWeight: 300,
@@ -438,8 +437,8 @@ export default function WorkSection() {
             color: "rgba(14,12,10,0.45)",
             maxWidth: "520px",
             margin: "1.5rem 0 0",
-            "--delay": "200ms",
-          } as React.CSSProperties}
+            animation: "fadeSlideUp 0.9s 0.35s cubic-bezier(0.23,1,0.32,1) both",
+          }}
         >
           Each project below was led by me as Design Lead — driving strategy and direction across a team of 15 visual, product, motion, content, and accessibility designers.
         </p>
