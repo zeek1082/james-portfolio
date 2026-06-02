@@ -727,7 +727,7 @@ export default function WorkSection() {
                   borderRadius: "50%",
                   border: `1px solid ${active.accentColor}50`,
                   background: `rgba(242,237,232,0.85)`,
-                  backdropFilter: "blur(8px)",
+                  backdropFilter: "blur(16px)",
                   color: active.accentColor,
                   fontSize: "1rem",
                   cursor: "pointer",
@@ -851,7 +851,7 @@ function ProjectCard({
           height: "100%",
           objectFit: "cover",
           display: "block",
-          filter: isNDA ? "blur(8px) brightness(0.7)" : "none",
+          filter: isNDA ? "blur(16px) brightness(0.7)" : "none",
         }}
       />
       {isNDA && (
@@ -920,7 +920,7 @@ function ProjectCard({
               textTransform: "uppercase",
               color: "rgba(255,255,255,0.7)",
               background: "rgba(0,0,0,0.45)",
-              backdropFilter: "blur(8px)",
+              backdropFilter: "blur(16px)",
               border: "1px solid rgba(255,255,255,0.12)",
               borderRadius: "2px",
               padding: "0.3rem 0.55rem",
