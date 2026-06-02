@@ -1119,17 +1119,19 @@ function GifPairSection({ s }: { s: CaseStudySection }) {
   return (
     <div
       ref={ref}
+      className="gif-pair-container"
       style={{
         background: "#F2EDE8",
         padding: "clamp(2.5rem, 6vw, 5rem) clamp(1.5rem, 5vw, 4rem)",
         display: "flex",
-        flexDirection: "column",
-        gap: "2rem",
-        alignItems: "center",
+        flexDirection: "row",
+        gap: "clamp(1.5rem, 4vw, 4rem)",
+        alignItems: "flex-start",
         justifyContent: "center",
         overflow: "hidden",
       }}
     >
+      <style>{`@media (max-width: 767px) { .gif-pair-container { flex-direction: column !important; align-items: center !important; } }`}</style>
       {s.gifLeft && (
         <div ref={leftRef} style={cardBase}>
           {renderMedia(s.gifLeft, s.gifLeftAlt || "")}
