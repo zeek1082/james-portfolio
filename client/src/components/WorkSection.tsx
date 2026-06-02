@@ -17,6 +17,9 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+gsap.registerPlugin(ScrollTrigger);
 import { useIsMobile } from "@/hooks/useMobile";
 import { Link, useLocation, useRouter } from "wouter";
 import { scrollToTopImmediate } from "@/hooks/useSmoothScroll";
