@@ -185,6 +185,7 @@ export default function WorkSection() {
   const lastHeaderScrollY = useRef<number>(0);
   const activeIndexRef = useRef<number>(0);
   const [sectionInView, setSectionInView] = useState(false);
+  const [coachVisible, setCoachVisible] = useState(false);
   const contextParaRef = useRef<HTMLParagraphElement>(null);
   const dragStartX = useRef<number>(0);
   const dragStartScrollY = useRef<number>(0);
@@ -220,6 +221,19 @@ export default function WorkSection() {
     }, { threshold: 0.1 });
     obs.observe(el);
     return () => obs.disconnect();
+  }, []);
+
+  // Coach mark: show when sticky section enters view, hide on first scroll
+  useEffect(() => {
+    const outer = outerRef.current;
+    if (!outer) return;
+    const obs = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) setCoachVisible(true);
+    }, { threshold: 0.3 });
+    obs.observe(outer);
+    const hideOnScroll = () => { setCoachVisible(false); };
+    window.addEventListener("scroll", hideOnScroll, { passive: true, once: true });
+    return () => { obs.disconnect(); window.removeEventListener("scroll", hideOnScroll); };
   }, []);
 
 
@@ -484,6 +498,31 @@ export default function WorkSection() {
               }}
             />
           ))}
+
+          {/* Coach mark — fades in on entry, disappears on first scroll */}
+          <div
+            style={{
+              position: "absolute",
+              bottom: "2.5rem",
+              left: "50%",
+              transform: "translateX(-50%)",
+              zIndex: 30,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "0.5rem",
+              opacity: coachVisible ? 1 : 0,
+              transition: "opacity 0.6s ease",
+              pointerEvents: "none",
+            }}
+          >
+            <span style={{ fontFamily: "Space Mono, monospace", fontSize: "0.48rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(14,12,10,0.4)" }}>
+              Scroll to explore
+            </span>
+            <svg width="16" height="24" viewBox="0 0 16 24" fill="none" style={{ animation: "coachBounce 1.4s ease-in-out infinite" }}>
+              <path d="M8 0v20M1 13l7 7 7-7" stroke="rgba(14,12,10,0.35)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
 
           {/* ── LEFT PANEL ── */}
           <div
