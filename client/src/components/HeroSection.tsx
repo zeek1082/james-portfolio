@@ -65,7 +65,6 @@ export default function HeroSection() {
       if (titleRef.current) {
         gsap.to(titleRef.current, {
           y: "-6%",
-          opacity: 0,
           ease: "none",
           scrollTrigger: { trigger: "#hero", start: "top top", end: "80% top", scrub: 0.5 },
         });
