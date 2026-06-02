@@ -12,7 +12,7 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { scrollTo, addLenisScrollListener, removeLenisScrollListener} from "@/hooks/useSmoothScroll";
+import { scrollTo, addLenisScrollListener, removeLenisScrollListener, scrollToTopImmediate } from "@/hooks/useSmoothScroll";
 import { useIsMobile } from "@/hooks/useMobile";
 import { useUnlock } from "@/contexts/UnlockContext";
 
@@ -47,6 +47,7 @@ export default function HeroSection() {
     } else {
       // Wait for PasswordGate to fire unlock — everything animates in together
       const unsub = onUnlock(() => {
+        scrollToTopImmediate();
         setTitleReady(true);
         setLoaded(true);
       });

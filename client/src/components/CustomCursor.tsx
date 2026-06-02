@@ -11,7 +11,14 @@
 
 import { useEffect, useRef } from "react";
 
+// Wrapper that skips rendering entirely on touch devices
 export default function CustomCursor() {
+  const isTouch = typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches;
+  if (isTouch) return null;
+  return <CustomCursorInner />;
+}
+
+function CustomCursorInner() {
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
 
