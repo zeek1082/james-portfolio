@@ -57,8 +57,10 @@ export default function HeroSection() {
 
   const isMobile = useIsMobile();
 
-  // GSAP scroll: split animation disabled on mobile to prevent x-axis clipping
+  // GSAP scroll: disabled entirely on mobile — hero is auto-height so ScrollTrigger
+  // would immediately fire at full progress, fading the title to invisible
   useEffect(() => {
+    if (isMobileSync) return;
     const ctx = gsap.context(() => {
       if (titleRef.current) {
         gsap.to(titleRef.current, {
@@ -68,14 +70,14 @@ export default function HeroSection() {
           scrollTrigger: { trigger: "#hero", start: "top top", end: "80% top", scrub: 0.5 },
         });
       }
-      if (!isMobileSync && jamesRef.current) {
+      if (jamesRef.current) {
         gsap.to(jamesRef.current, {
           x: "-18vw",
           ease: "none",
           scrollTrigger: { trigger: "#hero", start: "top top", end: "100% top", scrub: 0.6 },
         });
       }
-      if (!isMobileSync && smithRef.current) {
+      if (smithRef.current) {
         gsap.to(smithRef.current, {
           x: "18vw",
           ease: "none",
