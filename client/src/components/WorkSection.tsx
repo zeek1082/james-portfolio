@@ -843,22 +843,26 @@ function ProjectCard({
   const isNDA = project.slug === "ai-smartwatch";
   return (
     <HoverScaleCard style={{ borderRadius: "12px", overflow: "hidden", position: "relative" }}>
-      <img
-        src={project.image}
-        alt={project.title}
-        style={{
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          display: "block",
-          filter: isNDA ? "blur(16px) brightness(0.7)" : "none",
-        }}
-      />
+      {/* Wrap image to contain blur within rounded corners */}
+      <div style={{ position: "absolute", inset: 0, overflow: "hidden", borderRadius: "12px" }}>
+        <img
+          src={project.image}
+          alt={project.title}
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            display: "block",
+            filter: isNDA ? "blur(16px) brightness(0.7)" : "none",
+            transform: isNDA ? "scale(1.08)" : "scale(1)",
+          }}
+        />
+      </div>
       {isNDA && (
         <div style={{
           position: "absolute", inset: 0, zIndex: 10,
           display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-          padding: "1.5rem", textAlign: "center",
+          padding: "1.5rem", textAlign: "center", borderRadius: "12px",
         }}>
           <span style={{ fontFamily: "Space Mono, monospace", fontSize: "0.52rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(255,255,255,0.7)", lineHeight: 1.8 }}>
             NDA — Available in interview
