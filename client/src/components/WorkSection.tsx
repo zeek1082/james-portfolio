@@ -22,7 +22,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 import { useIsMobile } from "@/hooks/useMobile";
 import { Link, useLocation, useRouter } from "wouter";
-import { scrollToTopImmediate } from "@/hooks/useSmoothScroll";
+import { scrollToTopImmediate, getLenisInstance } from "@/hooks/useSmoothScroll";
 import HoverScaleCard from "./HoverScaleCard";
 
 interface Project {
@@ -188,7 +188,10 @@ export default function WorkSection() {
   const contextParaRef = useRef<HTMLParagraphElement>(null);
   const dragStartX = useRef<number>(0);
   const dragStartScrollY = useRef<number>(0);
-  const isDragging = useRef<boolean>(false); // guards against redundant setState
+  const isDragging = useRef<boolean>(false);
+  const lastDragX = useRef<number>(0);
+  const lastDragTime = useRef<number>(0);
+  const dragVelocity = useRef<number>(0); // guards against redundant setState
 
   // Cached layout measurements — recomputed only on resize, not every scroll tick
   const cachedLayout = useRef<{ cardW: number; gapPx: number; step: number; centerLeft: number; outerHeight: number; outerTop: number } | null>(null);
@@ -654,14 +657,39 @@ export default function WorkSection() {
               isDragging.current = true;
               dragStartX.current = e.clientX;
               dragStartScrollY.current = window.scrollY;
+              lastDragX.current = e.clientX;
+              lastDragTime.current = performance.now();
+              dragVelocity.current = 0;
             }}
             onMouseMove={(e) => {
               if (!isDragging.current) return;
+              const now = performance.now();
+              const dt = now - lastDragTime.current;
+              if (dt > 0) {
+                dragVelocity.current = (lastDragX.current - e.clientX) / dt;
+              }
+              lastDragX.current = e.clientX;
+              lastDragTime.current = now;
               const dx = dragStartX.current - e.clientX;
-              // Map horizontal drag to vertical scroll: 1px drag = 3px scroll
-              window.scrollTo({ top: dragStartScrollY.current + dx * 6, behavior: "auto" });
+              const lenis = getLenisInstance();
+              if (lenis) {
+                lenis.scrollTo(dragStartScrollY.current + dx * 6, { immediate: true });
+              } else {
+                window.scrollTo({ top: dragStartScrollY.current + dx * 6, behavior: "auto" });
+              }
             }}
-            onMouseUp={() => { isDragging.current = false; }}
+            onMouseUp={() => {
+              isDragging.current = false;
+              // Apply momentum matching Lenis natural scroll feel
+              const velocity = dragVelocity.current;
+              if (Math.abs(velocity) > 0.1) {
+                const lenis = getLenisInstance();
+                if (lenis) {
+                  const momentum = velocity * 400;
+                  lenis.scrollTo(window.scrollY + momentum, { duration: 1.2 });
+                }
+              }
+            }}
             onMouseLeave={() => { isDragging.current = false; }}
           >
             {/* Card 1 — pinned, centered on full page; left is set by JS */}
