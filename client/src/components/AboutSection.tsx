@@ -81,10 +81,7 @@ export default function AboutSection() {
             {/* Bio */}
             <div>
               <p className="text-lg md:text-xl text-white/80 leading-relaxed mb-8">
-                Product designer at Meta, working at the intersection of wearable computing,
-                AI, and spatial experiences. I've spent the last 4+ years helping define
-                what it means to wear intelligence — from the design system that powers the
-                glasses OS, to the AI character that greets you each morning.
+                Senior design manager at Meta with 14 years crafting products and 7 years leading teams. Working at the intersection of wearable computing, AI, and spatial experiences — from the design system powering the glasses OS, to the AI experiences greeting you each morning.
               </p>
               <p className="text-base text-white/50 leading-relaxed">
                 I care deeply about craft, systems thinking, and the moments that make
@@ -95,7 +92,7 @@ export default function AboutSection() {
             {/* Stats */}
             <div className="grid grid-cols-3 gap-8 content-start">
               {[
-                { value: "4", label: "Years at Meta" },
+                { value: "14", label: "Years experience" },
                 { value: "60+", label: "Components shipped" },
                 { value: "5", label: "Case studies" },
               ].map(({ value, label }) => (
@@ -133,7 +130,7 @@ export default function AboutSection() {
           <div className="border-t border-white/10 pt-12">
             <p className="text-xs tracking-[0.3em] uppercase text-white/30 mb-4">Currently</p>
             <p className="text-white/70 text-base">
-              Product Designer at Meta · Wearable Computing &amp; AI Experiences
+              Senior Design Manager, Product Design · Meta
             </p>
           </div>
         </div>

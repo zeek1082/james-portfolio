@@ -156,6 +156,23 @@ export default function ContactSection() {
             >
               LinkedIn ↗
             </a>
+            <a
+              href="/James_Smith_Resume_2026.pdf"
+              download
+              style={{
+                fontFamily: "Space Mono, monospace",
+                fontSize: "0.65rem",
+                letterSpacing: "0.15em",
+                textTransform: "uppercase",
+                color: "rgba(14,12,10,0.35)",
+                textDecoration: "none",
+                transition: "color 0.3s ease",
+              }}
+              onMouseEnter={(e) => ((e.target as HTMLElement).style.color = "rgba(14,12,10,0.85)")}
+              onMouseLeave={(e) => ((e.target as HTMLElement).style.color = "rgba(14,12,10,0.35)")}
+            >
+              Download CV ↓
+            </a>
           </div>
         </div>
 
