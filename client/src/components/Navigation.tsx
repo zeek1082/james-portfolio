@@ -334,17 +334,25 @@ export default function Navigation() {
                 >
                   Elsewhere
                 </span>
-                {["LinkedIn", "Read.cv"].map((link) => (
+                {[
+                  { label: "LinkedIn", href: "https://www.linkedin.com/in/james-smith-241a3470/" },
+                  { label: "Read.cv", href: "#" },
+                ].map(({ label, href }) => (
                   <a
-                    key={link}
-                    href="#"
+                    key={label}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     style={{
                       fontFamily: "DM Sans, sans-serif",
                       fontWeight: 300,
                       fontSize: "0.85rem",
                       color: "rgba(255,255,255,0.35)",
                       textDecoration: "none",
-                      display: "block",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "flex-end",
+                      gap: "0.4rem",
                       marginBottom: "0.4rem",
                       letterSpacing: "0.02em",
                       transition: "color 0.2s ease",
@@ -352,7 +360,10 @@ export default function Navigation() {
                     onMouseEnter={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.8)")}
                     onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.35)")}
                   >
-                    {link} ↗
+                    {label}
+                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" style={{ opacity: 0.5 }}>
+                      <path d="M1 9L9 1M9 1H3M9 1V7" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
                   </a>
                 ))}
               </motion.div>
