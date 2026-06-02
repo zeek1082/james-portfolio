@@ -24,6 +24,8 @@ const RAYBAN_IMG = "/manus-storage/rayban-meta-hero_1a588487.webp";
 
 export default function HeroSection() {
   const { onUnlock } = useUnlock();
+  // Synchronous mobile check — useIsMobile() has a 1-frame delay which causes layout flash
+  const isMobileSync = typeof window !== "undefined" && window.innerWidth < 768;
   // Check auth before useState so we can use it as default value
   const alreadyAuthed = (() => { try { return sessionStorage.getItem("js_portfolio_auth") === "1"; } catch { return false; } })();
   const heroRef = useRef<HTMLElement>(null);
@@ -32,8 +34,9 @@ export default function HeroSection() {
   const smithRef = useRef<HTMLDivElement>(null);
   const glitchRafRef = useRef<number>(0);
   const lastScrollY = useRef<number>(0);
-  const [loaded, setLoaded] = useState(alreadyAuthed);
-  const [titleReady, setTitleReady] = useState(alreadyAuthed);
+  // On mobile: skip the password-gate entrance animation entirely — show immediately
+  const [loaded, setLoaded] = useState(alreadyAuthed || isMobileSync);
+  const [titleReady, setTitleReady] = useState(alreadyAuthed || isMobileSync);
 
   // Gate ALL hero content behind unlock event (or show immediately if already authed)
   useEffect(() => {
@@ -64,14 +67,14 @@ export default function HeroSection() {
           scrollTrigger: { trigger: "#hero", start: "top top", end: "80% top", scrub: 0.5 },
         });
       }
-      if (!isMobile && jamesRef.current) {
+      if (!isMobileSync && jamesRef.current) {
         gsap.to(jamesRef.current, {
           x: "-18vw",
           ease: "none",
           scrollTrigger: { trigger: "#hero", start: "top top", end: "100% top", scrub: 0.6 },
         });
       }
-      if (!isMobile && smithRef.current) {
+      if (!isMobileSync && smithRef.current) {
         gsap.to(smithRef.current, {
           x: "18vw",
           ease: "none",
@@ -80,7 +83,7 @@ export default function HeroSection() {
       }
     });
     return () => ctx.revert();
-  }, [isMobile]);
+  }, [isMobileSync]);
 
   // Chromatic aberration removed for performance
   useEffect(() => {
@@ -110,12 +113,12 @@ export default function HeroSection() {
       data-bg-color="#F2EDE8"
       style={{
         position: "relative",
-        minHeight: isMobile ? "auto" : "100svh",
+        minHeight: isMobileSync ? "auto" : "100svh",
         backgroundColor: "#F2EDE8",
         overflow: "hidden",
         display: "flex",
         flexDirection: "column",
-        ...(isMobile ? {
+        ...(isMobileSync ? {
           justifyContent: "flex-start",
           paddingTop: "5rem",
           paddingBottom: "clamp(2rem, 4vh, 3.5rem)",
@@ -142,7 +145,7 @@ export default function HeroSection() {
       <div
         ref={titleRef}
         style={{
-          ...(isMobile ? {
+          ...(isMobileSync ? {
             position: "relative",
             zIndex: 1,
             pointerEvents: "none",
@@ -156,8 +159,8 @@ export default function HeroSection() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "flex-start",
-          paddingTop: isMobile ? "0" : "clamp(-1rem, -1vh, 0rem)",
-          marginTop: isMobile ? "0" : "-2vh",
+          paddingTop: isMobileSync ? "0" : "clamp(-1rem, -1vh, 0rem)",
+          marginTop: isMobileSync ? "0" : "-2vh",
           zIndex: 1,
           pointerEvents: "none",
           transformOrigin: "top center",
@@ -206,7 +209,7 @@ export default function HeroSection() {
       {/* ── BOTTOM CONTENT ── */}
       <div
         style={{
-          ...(isMobile ? {
+          ...(isMobileSync ? {
             position: "relative",
             zIndex: 4,
           } : {
@@ -266,7 +269,7 @@ export default function HeroSection() {
           right: "clamp(1rem, 2vw, 2rem)",
           transform: "translateY(-50%)",
           zIndex: 5,
-          display: isMobile ? "none" : "flex",
+          display: isMobileSync ? "none" : "flex",
           flexDirection: "column",
           alignItems: "center",
           gap: "0.5rem",
