@@ -185,7 +185,10 @@ export default function WorkSection() {
   const lastHeaderScrollY = useRef<number>(0);
   const activeIndexRef = useRef<number>(0);
   const [sectionInView, setSectionInView] = useState(false);
-  const contextParaRef = useRef<HTMLParagraphElement>(null); // guards against redundant setState
+  const contextParaRef = useRef<HTMLParagraphElement>(null);
+  const dragStartX = useRef<number>(0);
+  const dragStartScrollY = useRef<number>(0);
+  const isDragging = useRef<boolean>(false); // guards against redundant setState
 
   // Cached layout measurements — recomputed only on resize, not every scroll tick
   const cachedLayout = useRef<{ cardW: number; gapPx: number; step: number; centerLeft: number; outerHeight: number; outerTop: number } | null>(null);
@@ -645,7 +648,21 @@ export default function WorkSection() {
               position: "relative",
               overflow: "hidden",
               zIndex: 1,
+              cursor: isDragging.current ? "grabbing" : "grab",
             }}
+            onMouseDown={(e) => {
+              isDragging.current = true;
+              dragStartX.current = e.clientX;
+              dragStartScrollY.current = window.scrollY;
+            }}
+            onMouseMove={(e) => {
+              if (!isDragging.current) return;
+              const dx = dragStartX.current - e.clientX;
+              // Map horizontal drag to vertical scroll: 1px drag = 3px scroll
+              window.scrollTo({ top: dragStartScrollY.current + dx * 3, behavior: "auto" });
+            }}
+            onMouseUp={() => { isDragging.current = false; }}
+            onMouseLeave={() => { isDragging.current = false; }}
           >
             {/* Card 1 — pinned, centered on full page; left is set by JS */}
             <Link
