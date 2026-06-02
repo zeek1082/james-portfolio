@@ -1366,41 +1366,19 @@ function ClosingSection({
         {/* Right: closing media image */}
         {s.closingMedia && (
           <Reveal delay={80}>
-              <div
-                style={{
-                  borderRadius: "20px",
-                  overflow: "hidden",
-                  boxShadow: "0 8px 48px rgba(14,12,10,0.12)",
-                  width: "100%",
-                }}
-              >
-                {/\.(mov|mp4|webm)$/i.test(s.closingMedia || "") ? (
-                  <video
-                    src={s.closingMedia}
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    style={{
-                      width: "100%",
-                      height: "auto",
-                      display: "block",
-                    }}
-                  />
-                ) : (
-                  <img
-            loading="lazy"
-            decoding="async"
-                    src={s.closingMedia}
-                    alt=""
-                    style={{
-                      width: "100%",
-                      height: "auto",
-                      display: "block",
-                    }}
-                  />
-                )}
+            {/\.(mov|mp4|webm)$/i.test(s.closingMedia || "") ? (
+              // Video: no centering wrapper so height isn't constrained
+              <div style={{ borderRadius: "20px", overflow: "hidden", boxShadow: "0 8px 48px rgba(14,12,10,0.12)", width: "100%" }}>
+                <video src={s.closingMedia} autoPlay loop muted playsInline style={{ width: "100%", height: "auto", display: "block" }} />
               </div>
+            ) : (
+              // Image: centering wrapper for square images
+              <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                <div style={{ borderRadius: "20px", overflow: "hidden", boxShadow: "0 8px 48px rgba(14,12,10,0.12)", width: "100%" }}>
+                  <img loading="lazy" decoding="async" src={s.closingMedia} alt="" style={{ width: "100%", height: "auto", display: "block" }} />
+                </div>
+              </div>
+            )}
           </Reveal>
         )}
       </div>{/* end two-column row */}
