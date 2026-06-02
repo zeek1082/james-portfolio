@@ -130,7 +130,8 @@ function CustomCursorInner() {
           width: "8px",
           height: "8px",
           borderRadius: "50%",
-          background: "rgba(14,12,10,0.85)",
+          background: "rgba(255,255,255,0.95)",
+          mixBlendMode: "difference" as React.CSSProperties["mixBlendMode"],
           pointerEvents: "none",
           zIndex: 9999,
           willChange: "transform",
@@ -157,7 +158,7 @@ function CustomCursorInner() {
       />
       <style>{`
         .cursor-dot.cursor-hover {
-          background: linear-gradient(135deg, #1A3A2A, #B5CC18) !important;
+          background: rgba(255,255,255,0.95) !important;
         }
         .cursor-ring.cursor-hover {
           border-color: rgba(196,98,42,0.5) !important;
