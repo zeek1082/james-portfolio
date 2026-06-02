@@ -245,7 +245,7 @@ export default function HeroSection() {
               margin: "0 0 0.6rem",
             }}
           >
-            Design Systems - Wearables - AI Focused - AR/VR
+            Design Systems · Wearables · AI Native · AR/VR
           </p>
           <p
             style={{

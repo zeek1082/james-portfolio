@@ -337,7 +337,7 @@ export default function WorkSection() {
             Some of my recent work
           </h2>
           <p style={{ fontFamily: "DM Sans, sans-serif", fontWeight: 300, fontSize: "0.9rem", lineHeight: 1.75, color: "rgba(14,12,10,0.45)", margin: "1rem 0 0" }}>
-            Each project below was led by me as Design Lead — driving strategy across a team of 15 visual, product, motion, content, and accessibility designers.
+            As Design Lead on each of these projects, I drove strategy across a team of 15 — visual, product, motion, content, and accessibility designers.
           </p>
         </div>
 
@@ -441,7 +441,7 @@ export default function WorkSection() {
             margin: "1.5rem 0 0",
           }}
         >
-          Each project below was led by me as Design Lead — driving strategy and direction across a team of 15 visual, product, motion, content, and accessibility designers.
+          As Design Lead on each of these projects, I drove strategy across a team of 15 — visual, product, motion, content, and accessibility designers.
         </p>
       </div>
 

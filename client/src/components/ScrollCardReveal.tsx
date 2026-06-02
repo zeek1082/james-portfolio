@@ -332,12 +332,12 @@ function StaticLeftPanel({
           style={{
             fontFamily: "'Barlow Condensed', sans-serif",
             fontWeight: 800,
-            fontSize: "40px",
+            fontSize: "clamp(1.6rem, 3vw, 2.5rem)",
             color: "#0E0C0A",
             margin: "0 0 1.25rem",
             textTransform: "uppercase",
             letterSpacing: "-0.02em",
-            lineHeight: 1.05, width: '474px',
+            lineHeight: 1.05,
           }}
         >
           {leftHeadline}

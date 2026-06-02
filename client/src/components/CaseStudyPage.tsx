@@ -1502,7 +1502,7 @@ function VideoHeroSection({ s, accent }: { s: CaseStudySection; accent: string }
         <p style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.7rem", letterSpacing: "0.2em", color: '#f29354', margin: "0 0 1rem", textTransform: "uppercase" }}>
           {s.heroCategory} — {s.heroYear}
         </p>
-        <h1 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: '45px', lineHeight: 1.0, color: "#F2EDE8", margin: "0 0 1.5rem", textTransform: "uppercase", letterSpacing: "-0.02em", width: '584px' }}>
+        <h1 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: 'clamp(1.8rem, 6vw, 3rem)', lineHeight: 1.0, color: "#F2EDE8", margin: "0 0 1.5rem", textTransform: "uppercase", letterSpacing: "-0.02em", width: '100%' }}>
           {s.heroTitle}
         </h1>
         <p style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.7rem", letterSpacing: "0.15em", color: "rgba(242,237,232,0.5)", margin: 0, textTransform: "uppercase" }}>

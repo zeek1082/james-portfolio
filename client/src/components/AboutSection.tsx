@@ -67,7 +67,7 @@ export default function AboutSection() {
           {/* Hero quote */}
           <div className="mb-24 md:mb-32">
             <h2
-              className="text-5xl md:text-7xl lg:text-8xl font-black leading-[0.9] tracking-tight text-white"
+              className="text-4xl md:text-6xl lg:text-8xl font-black leading-[0.95] tracking-tight text-white"
               style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
             >
               "The best interfaces
