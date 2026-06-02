@@ -745,44 +745,7 @@ export default function WorkSection() {
               position: "relative",
               overflow: "hidden",
               zIndex: 1,
-              cursor: isDragging.current ? "grabbing" : "grab",
             }}
-            onMouseDown={(e) => {
-              isDragging.current = true;
-              lastDragX.current = e.clientX;
-              lastDragTime.current = performance.now();
-              dragVelocity.current = 0;
-            }}
-            onMouseMove={(e) => {
-              if (!isDragging.current) return;
-              const now = performance.now();
-              const dt = now - lastDragTime.current;
-              if (dt > 0) {
-                dragVelocity.current = (lastDragX.current - e.clientX) / dt;
-              }
-              lastDragX.current = e.clientX;
-              lastDragTime.current = now;
-              const dx = dragStartX.current - e.clientX;
-              const lenis = getLenisInstance();
-              if (lenis) {
-                lenis.scrollTo(dragStartScrollY.current + dx * 10, { immediate: true });
-              } else {
-                window.scrollTo({ top: dragStartScrollY.current + dx * 6, behavior: "auto" });
-              }
-            }}
-            onMouseUp={() => {
-              isDragging.current = false;
-              // Apply momentum matching Lenis natural scroll feel
-              const velocity = dragVelocity.current;
-              if (Math.abs(velocity) > 0.1) {
-                const lenis = getLenisInstance();
-                if (lenis) {
-                  const momentum = velocity * 800;
-                  lenis.scrollTo(window.scrollY + momentum, { duration: 1.2 });
-                }
-              }
-            }}
-            onMouseLeave={() => { isDragging.current = false; }}
           >
             {/* Card 1 — pinned, centered on full page; left is set by JS */}
             <Link
