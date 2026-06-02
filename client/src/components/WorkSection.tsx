@@ -655,8 +655,6 @@ export default function WorkSection() {
             }}
             onMouseDown={(e) => {
               isDragging.current = true;
-              dragStartX.current = e.clientX;
-              dragStartScrollY.current = window.scrollY;
               lastDragX.current = e.clientX;
               lastDragTime.current = performance.now();
               dragVelocity.current = 0;
