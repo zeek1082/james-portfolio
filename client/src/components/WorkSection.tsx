@@ -322,6 +322,9 @@ export default function WorkSection() {
           <h2 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "clamp(2.5rem, 10vw, 4.5rem)", lineHeight: 1.0, letterSpacing: "-0.03em", color: "#0E0C0A", margin: 0 }}>
             Some of my recent work
           </h2>
+          <p style={{ fontFamily: "DM Sans, sans-serif", fontWeight: 300, fontSize: "0.9rem", lineHeight: 1.75, color: "rgba(14,12,10,0.45)", margin: "1rem 0 0" }}>
+            Each project below was led by me as Design Lead — driving strategy across a team of 15 visual, product, motion, content, and accessibility designers.
+          </p>
         </div>
 
         {/* Vertical card list */}
@@ -412,6 +415,19 @@ export default function WorkSection() {
         >
           Some of my recent work
         </h2>
+        <p
+          style={{
+            fontFamily: "DM Sans, sans-serif",
+            fontWeight: 300,
+            fontSize: "clamp(0.85rem, 1.2vw, 1rem)",
+            lineHeight: 1.75,
+            color: "rgba(14,12,10,0.45)",
+            maxWidth: "520px",
+            margin: "1.5rem 0 0",
+          }}
+        >
+          Each project below was led by me as Design Lead — driving strategy and direction across a team of 15 visual, product, motion, content, and accessibility designers.
+        </p>
       </div>
 
       {/* Outer scroll wrapper — tall enough for all transitions */}
