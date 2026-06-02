@@ -707,21 +707,7 @@ export default function WorkSection() {
                 gap: "0.75rem",
                 pointerEvents: "none",
               }}
-            >          {/* Floating prev/next arrows — centered in card area */}
-          <div
-            ref={arrowsRef}
-            style={{
-              position: "absolute",
-              top: "50%",
-              left: "1.5rem",
-              transform: "translateY(-50%)",
-              zIndex: 50,
-              display: "flex",
-              flexDirection: "column",
-              gap: "0.75rem",
-              pointerEvents: "none",
-            }}
-          >
+            >
             {[{ dir: -1, label: "←" }, { dir: 1, label: "→" }].map(({ dir, label }) => (
               <button
                 key={label}
