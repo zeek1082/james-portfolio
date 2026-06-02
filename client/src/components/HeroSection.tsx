@@ -116,6 +116,11 @@ export default function HeroSection() {
         overflow: "hidden",
         display: "flex",
         flexDirection: "column",
+        ...(isMobile ? {
+          justifyContent: "space-between",
+          paddingTop: "5rem",
+          paddingBottom: "clamp(2rem, 4vh, 3.5rem)",
+        } : {}),
       }}
     >
       {/* Static noise texture — replaces SVG feTurbulence (which is CPU-rendered) */}
@@ -137,21 +142,26 @@ export default function HeroSection() {
       <div
         ref={titleRef}
         style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
+          ...(isMobile ? {
+            position: "relative",
+            zIndex: 1,
+            pointerEvents: "none",
+          } : {
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+          }),
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "flex-start",
-          paddingTop: "clamp(-1rem, -1vh, 0rem)",
-          marginTop: "-2vh",
+          paddingTop: isMobile ? "0" : "clamp(-1rem, -1vh, 0rem)",
+          marginTop: isMobile ? "0" : "-2vh",
           zIndex: 1,
           pointerEvents: "none",
           transformOrigin: "top center",
           willChange: "transform, opacity",
-          // Scale-in from slightly small — continues the gate zoom motion
           opacity: titleReady ? 1 : 0,
           transform: titleReady ? "scale(1)" : "scale(0.88)",
           transition: titleReady
@@ -169,7 +179,6 @@ export default function HeroSection() {
             letterSpacing: "-0.04em",
             color: "#0E0C0A",
             textAlign: "center",
-            whiteSpace: "nowrap",
             userSelect: "none",
             willChange: "transform",
           }}
@@ -186,7 +195,6 @@ export default function HeroSection() {
             letterSpacing: "-0.04em",
             color: "#0E0C0A",
             textAlign: "center",
-            whiteSpace: "nowrap",
             userSelect: "none",
             willChange: "transform",
           }}
@@ -198,10 +206,15 @@ export default function HeroSection() {
       {/* ── BOTTOM CONTENT ── */}
       <div
         style={{
-          position: "absolute",
-          bottom: 0,
-          left: 0,
-          right: 0,
+          ...(isMobile ? {
+            position: "relative",
+            zIndex: 4,
+          } : {
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+          }),
           zIndex: 4,
           display: "flex",
           justifyContent: "space-between",

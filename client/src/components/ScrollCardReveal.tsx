@@ -512,6 +512,45 @@ export default function ScrollCardReveal({
 
   if (cards.length === 0) return null;
 
+  // ── MOBILE: vertical stack ──────────────────────────────────────────────────
+  if (isMobile) {
+    return (
+      <div style={{ background: "#F2EDE8", padding: "3rem 1.5rem" }}>
+        {/* Section header */}
+        <div style={{ marginBottom: "2rem" }}>
+          {sub && (
+            <p style={{ fontFamily: "Space Mono, monospace", fontSize: "0.52rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(14,12,10,0.35)", marginBottom: "0.75rem" }}>
+              {sub}
+            </p>
+          )}
+          <h2 style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: "clamp(1.8rem, 7vw, 2.8rem)", lineHeight: 1.1, letterSpacing: "-0.02em", color: "#0E0C0A", margin: 0 }}>
+            {headline}
+          </h2>
+        </div>
+
+        {/* Vertical card list */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+          {cards.map((card, i) => (
+            <div key={i} style={{ borderRadius: "12px", overflow: "hidden", boxShadow: "0 4px 24px rgba(14,12,10,0.1)" }}>
+              <img
+                src={card.src}
+                alt={card.alt || ""}
+                loading="lazy"
+                decoding="async"
+                style={{ width: "100%", height: "auto", display: "block" }}
+              />
+              {card.caption && (
+                <div style={{ padding: "0.75rem 1rem", background: "#fff" }}>
+                  <p style={{ fontFamily: "Space Mono, monospace", fontSize: "0.5rem", letterSpacing: "0.12em", color: "rgba(14,12,10,0.5)", margin: 0 }}>{card.caption}</p>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   const active = cards[activeIndex] ?? cards[0];
   const { w: cw, h: ch } = cardSize;
 
