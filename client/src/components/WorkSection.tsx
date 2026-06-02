@@ -269,7 +269,7 @@ export default function WorkSection() {
       if (arrowsRef.current) {
         const cardAreaEl = cardAreaRef.current;
         const offset = cardAreaEl ? cardAreaEl.getBoundingClientRect().left : 0;
-        arrowsRef.current.style.left = `${centerLeft - 60}px`;
+        arrowsRef.current.style.left = `${Math.max(4, centerLeft - 56)}px`;
       }
 
       // Keep card 1 pinned at centerLeft; clear the CSS translateX(-50%) fallback
@@ -684,7 +684,30 @@ export default function WorkSection() {
           </div>
 
           {/* ── CARD AREA ── */}
-          {/* Floating prev/next arrows — centered in card area */}
+          <div
+            ref={cardAreaRef}
+            style={{
+              flex: 1,
+              position: "relative",
+              overflow: "hidden",
+              zIndex: 1,
+            }}
+          >
+            {/* Prev/Next arrows — positioned just left of the first card via JS */}
+            <div
+              ref={arrowsRef}
+              style={{
+                position: "absolute",
+                top: "50%",
+                left: "1.5rem",
+                transform: "translateY(-50%)",
+                zIndex: 50,
+                display: "flex",
+                flexDirection: "column",
+                gap: "0.75rem",
+                pointerEvents: "none",
+              }}
+            >          {/* Floating prev/next arrows — centered in card area */}
           <div
             ref={arrowsRef}
             style={{
@@ -745,15 +768,7 @@ export default function WorkSection() {
             ))}
           </div>
 
-          <div
-            ref={cardAreaRef}
-            style={{
-              flex: 1,
-              position: "relative",
-              overflow: "hidden",
-              zIndex: 1,
-            }}
-          >
+
             {/* Card 1 — pinned, centered on full page; left is set by JS */}
             <Link
               href={`/project/${projects[0].slug}`}
