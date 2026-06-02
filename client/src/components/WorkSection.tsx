@@ -659,7 +659,7 @@ export default function WorkSection() {
               if (!isDragging.current) return;
               const dx = dragStartX.current - e.clientX;
               // Map horizontal drag to vertical scroll: 1px drag = 3px scroll
-              window.scrollTo({ top: dragStartScrollY.current + dx * 3, behavior: "auto" });
+              window.scrollTo({ top: dragStartScrollY.current + dx * 6, behavior: "auto" });
             }}
             onMouseUp={() => { isDragging.current = false; }}
             onMouseLeave={() => { isDragging.current = false; }}
