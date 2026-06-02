@@ -1316,7 +1316,7 @@ function ClosingSection({
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
           gap: "clamp(2rem, 5vw, 4rem)",
-          alignItems: "center",
+          alignItems: "start",
         }}
       >
         {/* Left: text — 60% */}
@@ -1372,7 +1372,7 @@ function ClosingSection({
                   borderRadius: "20px",
                   overflow: "hidden",
                   boxShadow: "0 8px 48px rgba(14,12,10,0.12)",
-                  width: "90%",
+                  width: "100%",
                 }}
               >
                 {/\.(mov|mp4|webm)$/i.test(s.closingMedia || "") ? (
