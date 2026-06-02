@@ -216,21 +216,7 @@ export default function WorkSection() {
     return () => obs.disconnect();
   }, []);
 
-  // GSAP: both heading and context paragraph slide in from left together on scroll
-  useEffect(() => {
-    const heading = headingRef.current;
-    const para = contextParaRef.current;
-    if (!heading || !para) return;
-    const ctx = gsap.context(() => {
-      gsap.fromTo([heading, para],
-        { opacity: 0, x: -60 },
-        { opacity: 1, x: 0, duration: 1.1, ease: "power3.out", stagger: 0.12,
-          scrollTrigger: { trigger: heading, start: "top 80%", once: true }
-        }
-      );
-    });
-    return () => ctx.revert();
-  }, []);
+
 
   useEffect(() => {
     recomputeLayout();
@@ -323,11 +309,13 @@ export default function WorkSection() {
         // progress: 0 when header enters bottom of viewport, 1 when it exits top
         const progress = Math.min(1, Math.max(0, (viewH - rect.top) / (viewH + rect.height)));
 
-        // Parallax: whole heading slides left
+        // Parallax: heading + context paragraph slide left together
         const h = headingRef.current;
+        const p = contextParaRef.current;
         if (!h) return;
         const maxShift = window.innerWidth * 0.1;
         h.style.transform = `translateX(${progress * maxShift}px)`;
+        if (p) p.style.transform = `translateX(${progress * maxShift}px)`;
 
 
       });
@@ -457,7 +445,6 @@ export default function WorkSection() {
             color: "rgba(14,12,10,0.45)",
             maxWidth: "520px",
             margin: "1.5rem 0 0",
-            opacity: 0,
           }}
         >
           Each project below was led by me as Design Lead — driving strategy and direction across a team of 15 visual, product, motion, content, and accessibility designers.
