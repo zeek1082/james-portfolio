@@ -840,6 +840,7 @@ function ProjectCard({
   project: Project;
   isActive: boolean;
 }) {
+  const isNDA = project.slug === "ai-smartwatch";
   return (
     <HoverScaleCard style={{ borderRadius: "12px", overflow: "hidden", position: "relative" }}>
       <img
@@ -850,8 +851,20 @@ function ProjectCard({
           height: "100%",
           objectFit: "cover",
           display: "block",
+          filter: isNDA ? "blur(8px) brightness(0.7)" : "none",
         }}
       />
+      {isNDA && (
+        <div style={{
+          position: "absolute", inset: 0, zIndex: 10,
+          display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+          padding: "1.5rem", textAlign: "center",
+        }}>
+          <span style={{ fontFamily: "Space Mono, monospace", fontSize: "0.52rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(255,255,255,0.7)", lineHeight: 1.8 }}>
+            NDA — Available in interview
+          </span>
+        </div>
+      )}
 
       {/* Simple gradient for text legibility */}
       <div

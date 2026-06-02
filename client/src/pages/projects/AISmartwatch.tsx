@@ -1,4 +1,5 @@
 import CaseStudyPage, { CaseStudyData } from "../../components/CaseStudyPage";
+import { useState } from "react";
 
 const data: CaseStudyData = {
   slug: "ai-smartwatch",
@@ -103,5 +104,53 @@ const data: CaseStudyData = {
 };
 
 export default function AISmartwatch() {
+  const [unlocked, setUnlocked] = useState(
+    () => { try { return sessionStorage.getItem("ai_smartwatch_auth") === "1"; } catch { return false; } }
+  );
+  const [input, setInput] = useState("");
+  const [error, setError] = useState(false);
+
+  if (!unlocked) {
+    return (
+      <div style={{ minHeight: "100vh", backgroundColor: "#0A0908", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: "1.5rem", padding: "2rem" }}>
+        <p style={{ fontFamily: "Space Mono, monospace", fontSize: "0.55rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(242,237,232,0.35)", textAlign: "center", maxWidth: "340px", lineHeight: 1.9 }}>
+          This case study is under NDA and available to view during interviews.<br />Please reach out to request access.
+        </p>
+        <div style={{ display: "flex", gap: "0.75rem" }}>
+          <input
+            type="password"
+            value={input}
+            onChange={(e) => { setInput(e.target.value); setError(false); }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                if (input === "James-coop") {
+                  try { sessionStorage.setItem("ai_smartwatch_auth", "1"); } catch {}
+                  setUnlocked(true);
+                } else setError(true);
+              }
+            }}
+            placeholder="Enter password"
+            style={{ fontFamily: "Space Mono, monospace", fontSize: "0.65rem", letterSpacing: "0.1em", background: "rgba(255,255,255,0.05)", border: `1px solid ${error ? "rgba(255,80,80,0.5)" : "rgba(255,255,255,0.12)"}`, borderRadius: "2px", padding: "0.6rem 1rem", color: "#F2EDE8", outline: "none", width: "200px" }}
+          />
+          <button
+            onClick={() => {
+              if (input === "James-coop") {
+                try { sessionStorage.setItem("ai_smartwatch_auth", "1"); } catch {}
+                setUnlocked(true);
+              } else setError(true);
+            }}
+            style={{ fontFamily: "Space Mono, monospace", fontSize: "0.55rem", letterSpacing: "0.15em", textTransform: "uppercase", background: "transparent", border: "1px solid rgba(255,255,255,0.2)", borderRadius: "2px", padding: "0.6rem 1rem", color: "rgba(242,237,232,0.6)", cursor: "pointer" }}
+          >
+            Enter
+          </button>
+        </div>
+        {error && <p style={{ fontFamily: "Space Mono, monospace", fontSize: "0.5rem", color: "rgba(255,80,80,0.7)", letterSpacing: "0.1em" }}>Incorrect password</p>}
+        <a href="mailto:jamespsmith1082@gmail.com" style={{ fontFamily: "Space Mono, monospace", fontSize: "0.5rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(242,237,232,0.25)", textDecoration: "none", marginTop: "1rem" }}>
+          jamespsmith1082@gmail.com ↗
+        </a>
+      </div>
+    );
+  }
+
   return <CaseStudyPage data={data} />;
 }
