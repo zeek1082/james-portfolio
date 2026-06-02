@@ -32,7 +32,7 @@ export default function ContactSection() {
       ref={sectionRef}
       className="relative overflow-hidden"
       data-bg-color="#E8E2DB"
-      style={{ backgroundColor: "transparent", padding: "10rem 0 6rem" }}
+      style={{ backgroundColor: "transparent", padding: "clamp(5rem, 10vh, 10rem) 0 6rem" }}
     >
       {/* Background gradient */}
       <div
@@ -44,7 +44,7 @@ export default function ContactSection() {
 
       <div
         className="relative z-10"
-        style={{ maxWidth: "1360px", margin: "0 auto", padding: "0 4rem" }}
+        style={{ maxWidth: "1360px", margin: "0 auto", padding: "0 clamp(1.5rem, 5vw, 4rem)" }}
       >
         <div className="flex flex-col items-center text-center" style={{ gap: "2rem" }}>
 

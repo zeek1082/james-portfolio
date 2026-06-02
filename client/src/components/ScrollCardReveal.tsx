@@ -20,6 +20,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useIsMobile } from "@/hooks/useMobile";
 import { useLocation } from "wouter";
 import HoverScaleCard from "./HoverScaleCard";
 
@@ -386,8 +387,12 @@ export default function ScrollCardReveal({
   scrollMultiplier = 1.1,
 }: ScrollCardRevealProps) {
   const outerRef = useRef<HTMLDivElement>(null);
+  const stickyRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef<number>(0);
   const [activeIndex, setActiveIndex] = useState(0);
+  const isMobile = useIsMobile();
+  const touchStartX = useRef<number>(0);
+  const touchStartY = useRef<number>(0);
   const [cardSize, setCardSize] = useState(() =>
     computeCardSize(
       typeof window !== "undefined" ? window.innerWidth : 1440,
@@ -474,6 +479,37 @@ export default function ScrollCardReveal({
     };
   }, [onScroll]);
 
+  // Touch swipe — advance/retreat cards on mobile
+  useEffect(() => {
+    if (!isMobile) return;
+    const el = stickyRef.current;
+    if (!el) return;
+
+    const onTouchStart = (e: TouchEvent) => {
+      touchStartX.current = e.touches[0].clientX;
+      touchStartY.current = e.touches[0].clientY;
+    };
+
+    const onTouchEnd = (e: TouchEvent) => {
+      const dx = e.changedTouches[0].clientX - touchStartX.current;
+      const dy = e.changedTouches[0].clientY - touchStartY.current;
+      // Only register horizontal swipes (not vertical scroll attempts)
+      if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
+      setActiveIndex(prev =>
+        dx < 0
+          ? Math.min(prev + 1, cards.length - 1)
+          : Math.max(prev - 1, 0)
+      );
+    };
+
+    el.addEventListener("touchstart", onTouchStart, { passive: true });
+    el.addEventListener("touchend", onTouchEnd, { passive: true });
+    return () => {
+      el.removeEventListener("touchstart", onTouchStart);
+      el.removeEventListener("touchend", onTouchEnd);
+    };
+  }, [isMobile, cards.length]);
+
   if (cards.length === 0) return null;
 
   const active = cards[activeIndex] ?? cards[0];
@@ -489,6 +525,7 @@ export default function ScrollCardReveal({
     >
       {/* Sticky full-width cream container */}
       <div
+        ref={stickyRef}
         style={{
           position: "sticky",
           top: 0,

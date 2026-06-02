@@ -17,6 +17,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useIsMobile } from "@/hooks/useMobile";
 import { Link, useLocation, useRouter } from "wouter";
 import { scrollToTopImmediate } from "@/hooks/useSmoothScroll";
 import HoverScaleCard from "./HoverScaleCard";
@@ -306,8 +307,72 @@ export default function WorkSection() {
     };
   }, []);
 
+  const isMobile = useIsMobile();
   const active = projects[activeIndex];
 
+  // ── MOBILE: vertical stack ──────────────────────────────────────────────────
+  if (isMobile) {
+    return (
+      <div id="work" style={{ backgroundColor: "transparent" }}>
+        {/* Header */}
+        <div style={{ padding: "5rem 1.5rem 3rem", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+          <span style={{ fontFamily: "Space Mono, monospace", fontSize: "0.55rem", letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(255,255,255,0.3)", display: "block", marginBottom: "1.2rem" }}>
+            Selected Work
+          </span>
+          <h2 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: "clamp(2.5rem, 10vw, 4.5rem)", lineHeight: 1.0, letterSpacing: "-0.03em", color: "#0E0C0A", margin: 0 }}>
+            Some of my recent work
+          </h2>
+        </div>
+
+        {/* Vertical card list */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "0" }}>
+          {projects.map((project, i) => (
+            <div
+              key={project.id}
+              style={{ backgroundColor: project.bgColor, padding: "3rem 1.5rem" }}
+              onClick={() => { scrollToTopImmediate(); navigate(`/project/${project.slug}`); }}
+            >
+              {/* Number + category */}
+              <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1.5rem" }}>
+                <span style={{ fontFamily: "Space Mono, monospace", fontSize: "0.6rem", color: project.accentColor, letterSpacing: "0.1em" }}>{project.num}</span>
+                <div style={{ flex: 1, height: "1px", background: `linear-gradient(to right, ${project.accentColor}60, transparent)` }} />
+                <span style={{ fontFamily: "Space Mono, monospace", fontSize: "0.5rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(14,12,10,0.4)" }}>{project.category}</span>
+              </div>
+
+              {/* Image */}
+              <div style={{ borderRadius: "4px", overflow: "hidden", marginBottom: "1.5rem", aspectRatio: "16/9" }}>
+                <img
+                  src={project.image}
+                  alt={project.title}
+                  loading="lazy"
+                  decoding="async"
+                  style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top", display: "block" }}
+                />
+              </div>
+
+              {/* Title + description */}
+              <h3 style={{ fontFamily: "Space Mono, monospace", fontWeight: 400, fontSize: "clamp(1rem, 4vw, 1.3rem)", lineHeight: 1.3, color: "#0E0C0A", margin: "0 0 0.75rem" }}>{project.title}</h3>
+              <p style={{ fontFamily: "DM Sans, sans-serif", fontWeight: 300, fontSize: "0.88rem", lineHeight: 1.75, color: "rgba(14,12,10,0.5)", margin: "0 0 1.25rem" }}>{project.description}</p>
+
+              {/* Tags */}
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem", marginBottom: "1.5rem" }}>
+                {project.tags.map(tag => (
+                  <span key={tag} style={{ fontFamily: "Space Mono, monospace", fontSize: "0.48rem", letterSpacing: "0.15em", textTransform: "uppercase", color: project.accentColor, border: `1px solid ${project.accentColor}40`, borderRadius: "2px", padding: "0.35rem 0.6rem" }}>{tag}</span>
+                ))}
+              </div>
+
+              {/* CTA */}
+              <button style={{ fontFamily: "Space Mono, monospace", fontSize: "0.55rem", letterSpacing: "0.15em", textTransform: "uppercase", color: project.accentColor, background: "transparent", border: `1px solid ${project.accentColor}50`, borderRadius: "2px", padding: "0.75rem 1.25rem", cursor: "pointer" }}>
+                View Case Study →
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // ── DESKTOP: sticky horizontal carousel ─────────────────────────────────────
   return (
     <div id="work">
       {/* Section header */}

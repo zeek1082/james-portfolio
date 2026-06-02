@@ -13,6 +13,7 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { scrollTo, addLenisScrollListener, removeLenisScrollListener} from "@/hooks/useSmoothScroll";
+import { useIsMobile } from "@/hooks/useMobile";
 import { useUnlock } from "@/contexts/UnlockContext";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -51,51 +52,36 @@ export default function HeroSection() {
     }
   }, [onUnlock, alreadyAuthed]);
 
-  // GSAP scroll: split animation — willChange pre-rasterizes text as GPU texture
-  // so movement is compositor-only, same performance as animating an image
+  const isMobile = useIsMobile();
+
+  // GSAP scroll: split animation disabled on mobile to prevent x-axis clipping
   useEffect(() => {
     const ctx = gsap.context(() => {
       if (titleRef.current) {
         gsap.to(titleRef.current, {
-          scale: 1.06,
           y: "-6%",
+          opacity: 0,
           ease: "none",
-          scrollTrigger: {
-            trigger: "#hero",
-            start: "top top",
-            end: "80% top",
-            scrub: 0.5,
-          },
+          scrollTrigger: { trigger: "#hero", start: "top top", end: "80% top", scrub: 0.5 },
         });
       }
-      if (jamesRef.current) {
+      if (!isMobile && jamesRef.current) {
         gsap.to(jamesRef.current, {
           x: "-18vw",
           ease: "none",
-          scrollTrigger: {
-            trigger: "#hero",
-            start: "top top",
-            end: "100% top",
-            scrub: 0.6,
-          },
+          scrollTrigger: { trigger: "#hero", start: "top top", end: "100% top", scrub: 0.6 },
         });
       }
-      if (smithRef.current) {
+      if (!isMobile && smithRef.current) {
         gsap.to(smithRef.current, {
           x: "18vw",
           ease: "none",
-          scrollTrigger: {
-            trigger: "#hero",
-            start: "top top",
-            end: "100% top",
-            scrub: 0.6,
-          },
+          scrollTrigger: { trigger: "#hero", start: "top top", end: "100% top", scrub: 0.6 },
         });
       }
     });
-
     return () => ctx.revert();
-  }, []);
+  }, [isMobile]);
 
   // Chromatic aberration removed for performance
   useEffect(() => {
