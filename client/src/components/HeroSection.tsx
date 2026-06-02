@@ -117,9 +117,10 @@ export default function HeroSection() {
         display: "flex",
         flexDirection: "column",
         ...(isMobile ? {
-          justifyContent: "space-between",
+          justifyContent: "flex-start",
           paddingTop: "5rem",
           paddingBottom: "clamp(2rem, 4vh, 3.5rem)",
+          gap: "2rem",
         } : {}),
       }}
     >
@@ -258,7 +259,7 @@ export default function HeroSection() {
         </div>
       </div>
 
-      {/* Availability dot — right edge, vertical */}
+      {/* Availability dot — right edge, vertical — hidden on mobile */}
       <div
         style={{
           position: "absolute",
@@ -266,7 +267,7 @@ export default function HeroSection() {
           right: "clamp(1rem, 2vw, 2rem)",
           transform: "translateY(-50%)",
           zIndex: 5,
-          display: "flex",
+          display: isMobile ? "none" : "flex",
           flexDirection: "column",
           alignItems: "center",
           gap: "0.5rem",

@@ -554,7 +554,10 @@ function ImageSplitSection({
 }) {
   const isReverse = s.splitReverse;
   return (
+    <div>
+      <style>{`@media (max-width: 767px) { .split-grid { grid-template-columns: 1fr !important; min-height: auto !important; } }`}</style>
     <div
+      className="split-grid"
       style={{
         display: "grid",
         gridTemplateColumns: "1fr 1fr",
@@ -619,6 +622,7 @@ function ImageSplitSection({
           </p>
         </Reveal>
       </div>
+    </div>
     </div>
   );
 }
@@ -1296,17 +1300,19 @@ function ClosingSection({
   return (
     <div
       style={{
-        padding: "8rem 4rem",
+        padding: "clamp(3rem, 8vw, 8rem) clamp(1.5rem, 5vw, 4rem)",
         background: "#F2EDE8",
         borderTop: `1px solid ${accent}20`,
       }}
     >
-      {/* Two-column layout when closingMedia is present */}
+      <style>{`@media (max-width: 767px) { .closing-grid { grid-template-columns: 1fr !important; } }`}</style>
+      {/* Two-column layout when closingMedia is present — stacks on mobile */}
       <div
+        className="closing-grid"
         style={{
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
-          gap: "4rem",
+          gap: "clamp(2rem, 5vw, 4rem)",
           alignItems: "center",
         }}
       >
