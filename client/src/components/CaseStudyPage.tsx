@@ -1079,7 +1079,8 @@ function GifPairSection({ s }: { s: CaseStudySection }) {
   }, []);
 
   const cardBase: React.CSSProperties = {
-    width: "100%",
+    flex: "1 1 0",
+    minWidth: 0,
     maxWidth: "640px",
     borderRadius: "clamp(16px, 4vw, 36px)",
     overflow: "hidden",
