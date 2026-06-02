@@ -673,7 +673,7 @@ export default function WorkSection() {
               const dx = dragStartX.current - e.clientX;
               const lenis = getLenisInstance();
               if (lenis) {
-                lenis.scrollTo(dragStartScrollY.current + dx * 6, { immediate: true });
+                lenis.scrollTo(dragStartScrollY.current + dx * 10, { immediate: true });
               } else {
                 window.scrollTo({ top: dragStartScrollY.current + dx * 6, behavior: "auto" });
               }
@@ -685,7 +685,7 @@ export default function WorkSection() {
               if (Math.abs(velocity) > 0.1) {
                 const lenis = getLenisInstance();
                 if (lenis) {
-                  const momentum = velocity * 400;
+                  const momentum = velocity * 800;
                   lenis.scrollTo(window.scrollY + momentum, { duration: 1.2 });
                 }
               }
