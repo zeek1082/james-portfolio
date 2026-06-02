@@ -269,7 +269,7 @@ export default function WorkSection() {
       if (arrowsRef.current) {
         const cardAreaEl = cardAreaRef.current;
         const offset = cardAreaEl ? cardAreaEl.getBoundingClientRect().left : 0;
-        arrowsRef.current.style.left = `${Math.max(4, centerLeft - 56)}px`;
+        arrowsRef.current.style.left = `${Math.max(4, centerLeft - 112)}px`;
       }
 
       // Keep card 1 pinned at centerLeft; clear the CSS translateX(-50%) fallback
