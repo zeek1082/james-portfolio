@@ -309,13 +309,11 @@ export default function WorkSection() {
         // progress: 0 when header enters bottom of viewport, 1 when it exits top
         const progress = Math.min(1, Math.max(0, (viewH - rect.top) / (viewH + rect.height)));
 
-        // Parallax: heading + context paragraph slide left together
+        // Parallax: heading slides left
         const h = headingRef.current;
-        const p = contextParaRef.current;
         if (!h) return;
         const maxShift = window.innerWidth * 0.1;
         h.style.transform = `translateX(${progress * maxShift}px)`;
-        if (p) p.style.transform = `translateX(${progress * maxShift}px)`;
 
 
       });
