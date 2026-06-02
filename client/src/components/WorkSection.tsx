@@ -682,13 +682,12 @@ export default function WorkSection() {
             style={{
               position: "absolute",
               top: "50%",
-              left: "clamp(260px, 28vw, 380px)",
-              right: 0,
+              left: "1.5rem",
               transform: "translateY(-50%)",
               zIndex: 50,
               display: "flex",
-              justifyContent: "center",
-              gap: "1rem",
+              flexDirection: "column",
+              gap: "0.75rem",
               pointerEvents: "none",
             }}
           >
