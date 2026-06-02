@@ -186,7 +186,8 @@ export default function WorkSection() {
   const activeIndexRef = useRef<number>(0);
   const [sectionInView, setSectionInView] = useState(false);
   const [coachVisible, setCoachVisible] = useState(false);
-  const contextParaRef = useRef<HTMLParagraphElement>(null); // guards against redundant setState
+  const contextParaRef = useRef<HTMLParagraphElement>(null);
+  const arrowsRef = useRef<HTMLDivElement>(null); // guards against redundant setState
 
   // Cached layout measurements — recomputed only on resize, not every scroll tick
   const cachedLayout = useRef<{ cardW: number; gapPx: number; step: number; centerLeft: number; outerHeight: number; outerTop: number } | null>(null);
@@ -264,6 +265,12 @@ export default function WorkSection() {
       if (!card1El) return;
 
       centerLeftRef.current = centerLeft;
+      // Keep arrows just to the left of the first card
+      if (arrowsRef.current) {
+        const cardAreaEl = cardAreaRef.current;
+        const offset = cardAreaEl ? cardAreaEl.getBoundingClientRect().left : 0;
+        arrowsRef.current.style.left = `${centerLeft - 60}px`;
+      }
 
       // Keep card 1 pinned at centerLeft; clear the CSS translateX(-50%) fallback
       card1El.style.left = `${centerLeft}px`;
@@ -679,6 +686,7 @@ export default function WorkSection() {
           {/* ── CARD AREA ── */}
           {/* Floating prev/next arrows — centered in card area */}
           <div
+            ref={arrowsRef}
             style={{
               position: "absolute",
               top: "50%",
