@@ -132,14 +132,14 @@ export default function ContactSection() {
             style={{ marginTop: "1rem", "--delay": "460ms" } as React.CSSProperties}
           >
             <a
-              href="mailto:james@example.com"
+              href="mailto:jamespsmith1082@gmail.com"
               className="btn-outline-glow"
               style={{ borderRadius: "2px", textDecoration: "none", display: "inline-block" }}
             >
               Say Hello →
             </a>
             <a
-              href="https://linkedin.com"
+              href="https://www.linkedin.com/in/james-smith-241a3470/"
               target="_blank"
               rel="noopener noreferrer"
               style={{

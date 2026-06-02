@@ -82,7 +82,7 @@ export default function AboutSection() {
             <div>
               <p className="text-lg md:text-xl text-white/80 leading-relaxed mb-8">
                 Product designer at Meta, working at the intersection of wearable computing,
-                AI, and spatial experiences. I've spent the last several years helping define
+                AI, and spatial experiences. I've spent the last 4+ years helping define
                 what it means to wear intelligence — from the design system that powers the
                 glasses OS, to the AI character that greets you each morning.
               </p>
@@ -97,7 +97,7 @@ export default function AboutSection() {
               {[
                 { value: "4", label: "Years at Meta" },
                 { value: "60+", label: "Components shipped" },
-                { value: "3", label: "Products launched" },
+                { value: "5", label: "Case studies" },
               ].map(({ value, label }) => (
                 <div key={label} className="border-t border-white/10 pt-6">
                   <div
