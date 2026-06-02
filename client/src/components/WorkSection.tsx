@@ -625,21 +625,62 @@ export default function WorkSection() {
 
             <CaseStudyButton active={active} />
 
-            {/* Progress dots */}
-            <div style={{ display: "flex", gap: "0.5rem", marginTop: "2rem" }}>
-              {projects.map((p, i) => (
-                <div
-                  key={p.id}
-                  style={{
-                    width: i === activeIndex ? "24px" : "6px",
-                    height: "6px",
-                    borderRadius: "3px",
-                    backgroundColor:
-                      i === activeIndex ? active.accentColor : "rgba(14,12,10,0.15)",
-                    transition: "all 0.4s cubic-bezier(0.23,1,0.32,1)",
-                  }}
-                />
-              ))}
+            {/* Progress dots + arrow nav */}
+            <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginTop: "2rem" }}>
+              <div style={{ display: "flex", gap: "0.5rem" }}>
+                {projects.map((p, i) => (
+                  <div
+                    key={p.id}
+                    style={{
+                      width: i === activeIndex ? "24px" : "6px",
+                      height: "6px",
+                      borderRadius: "3px",
+                      backgroundColor:
+                        i === activeIndex ? active.accentColor : "rgba(14,12,10,0.15)",
+                      transition: "all 0.4s cubic-bezier(0.23,1,0.32,1)",
+                    }}
+                  />
+                ))}
+              </div>
+              {/* Prev / Next arrows */}
+              <div style={{ display: "flex", gap: "0.5rem", marginLeft: "0.5rem" }}>
+                {[{ dir: -1, label: "←" }, { dir: 1, label: "→" }].map(({ dir, label }) => (
+                  <button
+                    key={label}
+                    onClick={() => {
+                      const lenis = getLenisInstance();
+                      const perCard = (outerRef.current?.offsetHeight ?? window.innerHeight * TOTAL_SCROLL_MULTIPLIER) / projects.length;
+                      const target = window.scrollY + dir * perCard;
+                      if (lenis) lenis.scrollTo(target, { duration: 0.8 });
+                      else window.scrollTo({ top: target, behavior: "smooth" });
+                    }}
+                    style={{
+                      width: "28px",
+                      height: "28px",
+                      borderRadius: "50%",
+                      border: `1px solid ${active.accentColor}40`,
+                      background: "transparent",
+                      color: active.accentColor,
+                      fontSize: "0.75rem",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      transition: "all 0.2s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = `${active.accentColor}15`;
+                      e.currentTarget.style.borderColor = active.accentColor;
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = "transparent";
+                      e.currentTarget.style.borderColor = `${active.accentColor}40`;
+                    }}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
