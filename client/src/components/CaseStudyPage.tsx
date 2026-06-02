@@ -1366,7 +1366,6 @@ function ClosingSection({
         {/* Right: closing media image */}
         {s.closingMedia && (
           <Reveal delay={80}>
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
               <div
                 style={{
                   borderRadius: "20px",
@@ -1402,7 +1401,6 @@ function ClosingSection({
                   />
                 )}
               </div>
-            </div>
           </Reveal>
         )}
       </div>{/* end two-column row */}
