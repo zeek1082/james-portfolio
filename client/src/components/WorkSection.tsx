@@ -213,15 +213,16 @@ export default function WorkSection() {
     return () => obs.disconnect();
   }, []);
 
-  // GSAP scroll-triggered entrance for context paragraph
+  // GSAP: both heading and context paragraph slide in from left together on scroll
   useEffect(() => {
-    const el = contextParaRef.current;
-    if (!el) return;
+    const heading = headingRef.current;
+    const para = contextParaRef.current;
+    if (!heading || !para) return;
     const ctx = gsap.context(() => {
-      gsap.fromTo(el,
-        { opacity: 0, y: 24 },
-        { opacity: 1, y: 0, duration: 0.9, ease: "power3.out",
-          scrollTrigger: { trigger: el, start: "top 85%", once: true }
+      gsap.fromTo([heading, para],
+        { opacity: 0, x: -60 },
+        { opacity: 1, x: 0, duration: 1.1, ease: "power3.out", stagger: 0.12,
+          scrollTrigger: { trigger: heading, start: "top 80%", once: true }
         }
       );
     });
@@ -439,7 +440,6 @@ export default function WorkSection() {
             letterSpacing: "-0.035em",
             color: "#0E0C0A",
             margin: 0,
-            willChange: "transform",
           }}
         >
           Some of my recent work
