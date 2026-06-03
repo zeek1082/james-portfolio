@@ -865,7 +865,7 @@ function ProjectCard({
           padding: "1.5rem", textAlign: "center", borderRadius: "12px",
         }}>
           <span style={{ fontFamily: "Space Mono, monospace", fontSize: "0.52rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(255,255,255,0.7)", lineHeight: 1.8 }}>
-            NDA — Can discuss high level in interviews
+            NDA — Can discuss at a high level in interviews
           </span>
         </div>
       )}
