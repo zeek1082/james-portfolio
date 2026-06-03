@@ -81,7 +81,7 @@ const projects: Project[] = [
   {
     id: 4,
     num: "04",
-    category: "AI SYSTEMS",
+    category: "AI POWERED OS",
     title: "AI Assistant Device",
     description:
       "A watch with no OS — just an AI that learns what you need. Two design systems: a system language and a user theming framework.",
