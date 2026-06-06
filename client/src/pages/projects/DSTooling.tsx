@@ -2,7 +2,7 @@ import CaseStudyPage, { CaseStudyData } from "../../components/CaseStudyPage";
 
 const data: CaseStudyData = {
   slug: "ds-tooling",
-  title: "AI Design Tooling",
+  title: "AI-Powered Design Tooling",
   category: "Tooling & AI",
   year: "2025",
   role: "Design Lead",
@@ -11,7 +11,7 @@ const data: CaseStudyData = {
     {
       type: "video-hero",
       videoSrc: "/manus-storage/ScreenRecording2026-06-01at9.20.30AM_d00a73eb.mov",
-      heroTitle: "AI Design Tooling",
+      heroTitle: "AI-Powered Design Tooling",
       heroCategory: "Tooling & AI",
       heroYear: "2025",
       heroRole: "Design Lead",
@@ -68,7 +68,7 @@ const data: CaseStudyData = {
       closingHeadline:
         "A suite of tools that gave the team back the time to do their best work.",
       closingBody:
-        "The AI Design Tooling suite shipped internally in 2025 and is now used by every designer working on Meta's wearables products. The linter has caught thousands of token violations, the AI docs have eliminated the documentation backlog, and the vibe IDE has become the primary design environment for new component development.",
+        "The AI-Powered Design Tooling suite shipped internally in 2025 and is now used by every designer working on Meta's wearables products. The linter has caught thousands of token violations, the AI docs have eliminated the documentation backlog, and the vibe IDE has become the primary design environment for new component development.",
       closingMedia: "/manus-storage/Screenshot2026-03-25at10.56.46AM1_f69286d0.webp",
       nextProject: {
         title: "Ray-Ban Meta Display Design System",
