@@ -95,7 +95,7 @@ const projects: Project[] = [
     id: 5,
     num: "05",
     category: "TOOLING & AI",
-    title: "Design Systems Tooling",
+    title: "AI Design Tooling",
     description:
       "AI-powered design tooling — from system linters to a full vibe-coding IDE built on web components.",
     tags: ["AI TOOLING", "FIGMA PLUGINS"],
