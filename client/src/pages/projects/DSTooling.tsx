@@ -10,7 +10,7 @@ const data: CaseStudyData = {
   sections: [
     {
       type: "video-hero",
-      videoSrc: "/manus-storage/ScreenRecording2026-06-01at9.20.30AM_d00a73eb.mov",
+      videoSrc: "/manus-storage/ScreenRecording2026-06-01at9.20.30AM_d00a73eb.mp4",
       heroTitle: "AI-Powered Design Tooling",
       heroCategory: "Tooling & AI",
       heroYear: "2025",
@@ -33,7 +33,7 @@ const data: CaseStudyData = {
     },
     {
       type: "video-break",
-      videoSrc: "/manus-storage/ScreenRecording2026-06-01at9.34.37AM_97703554.mov",
+      videoSrc: "/manus-storage/ScreenRecording2026-06-01at9.34.37AM_97703554.mp4",
       videoScale: 0.82,
       videoLabel: "DS Tooling — Linter in Action",
       videoCaption: "Automated design system linting catching token misuse in real time",
@@ -46,10 +46,10 @@ const data: CaseStudyData = {
     {
       type: "video-grid",
       videoGridItems: [
-        { src: "/manus-storage/ScreenRecording2026-06-01at10.08.18AM_8039411c.mov" },
-        { src: "/manus-storage/ScreenRecording2026-06-01at9.31.19AM_914a3df9.mov" },
-        { src: "/manus-storage/ScreenRecording2026-06-01at9.28.48AM_9961ded8.mov" },
-        { src: "/manus-storage/ScreenRecording2026-06-01at9.27.38AM_bfb771a9.mov" },
+        { src: "/manus-storage/ScreenRecording2026-06-01at10.08.18AM_8039411c.mp4" },
+        { src: "/manus-storage/ScreenRecording2026-06-01at9.31.19AM_914a3df9.mp4" },
+        { src: "/manus-storage/ScreenRecording2026-06-01at9.28.48AM_9961ded8.mp4" },
+        { src: "/manus-storage/ScreenRecording2026-06-01at9.27.38AM_bfb771a9.mp4" },
       ],
     },
     {
