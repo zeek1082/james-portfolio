@@ -1481,7 +1481,7 @@ function VideoHeroSection({ s, accent }: { s: CaseStudySection; accent: string }
             decoding="async"
           src={s.heroImage}
           alt={s.heroTitle}
-          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "left center" }}
+          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center center" }}
         />
       ) : (
         <video
@@ -1492,7 +1492,7 @@ function VideoHeroSection({ s, accent }: { s: CaseStudySection; accent: string }
           muted
           loop
           playsInline
-          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "left center" }}
+          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center center" }}
         />
       )}
       {/* Gradient overlay */}
